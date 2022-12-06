@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="AutoMapper" Version="12.0.0" />
+      <PackageReference Include="CloudinaryDotNet" Version="1.20.0" />
+      <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="6.0.11" />
+      <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.25.1" />
+      <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.25.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Readdit.Infrastructure\Readdit.Infrastructure.csproj" />
+    </ItemGroup>
+
+</Project>

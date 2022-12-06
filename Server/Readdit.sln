@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Readdit.Web", "Readdit.Web\Readdit.Web.csproj", "{368791C0-66B3-4807-AE43-F614EA122C95}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Readdit.Services", "Readdit.Services\Readdit.Services.csproj", "{63DD590B-E0F4-4677-8F1F-D7FF8C51EFCD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Readdit.Infrastructure", "Readdit.Infrastructure\Readdit.Infrastructure.csproj", "{42A2DD8F-D73E-4341-B84D-B25FBDA005C2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{368791C0-66B3-4807-AE43-F614EA122C95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{368791C0-66B3-4807-AE43-F614EA122C95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{368791C0-66B3-4807-AE43-F614EA122C95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{368791C0-66B3-4807-AE43-F614EA122C95}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63DD590B-E0F4-4677-8F1F-D7FF8C51EFCD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63DD590B-E0F4-4677-8F1F-D7FF8C51EFCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63DD590B-E0F4-4677-8F1F-D7FF8C51EFCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63DD590B-E0F4-4677-8F1F-D7FF8C51EFCD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42A2DD8F-D73E-4341-B84D-B25FBDA005C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42A2DD8F-D73E-4341-B84D-B25FBDA005C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42A2DD8F-D73E-4341-B84D-B25FBDA005C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42A2DD8F-D73E-4341-B84D-B25FBDA005C2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
