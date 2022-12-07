@@ -13,19 +13,21 @@ public class ApplicationUserConfiguration : IEntityTypeConfiguration<Application
             .WithMany();
 
         builder
-            .OwnsOne(u => u.Profile, p =>
-            {
-                p.WithOwner(p => p.User)
-                    .HasForeignKey(pr => pr.UserId);
-                p.ToTable($"{nameof(UserProfile)}s");
-                p.HasKey(p => p.Id);
-            });
+            .HasOne(u => u.Profile)
+            .WithOne(p => p.User)
+            .OnDelete(DeleteBehavior.Cascade);
         
         builder
             .HasMany(u => u.Communities)
             .WithOne(uc => uc.User)
             .HasForeignKey(uc => uc.UserId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder
+            .HasMany(u => u.CommunitiesAdministrated)
+            .WithOne(c => c.Admin)
+            .HasForeignKey(c => c.AdminId)
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder
             .HasMany(u => u.CommunityPosts)

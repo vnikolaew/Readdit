@@ -20,7 +20,7 @@ public class ApplicationUser : IdentityUser, IAuditableEntity, IDeletableEntity
     [Required]
     public Country Country { get; set; }
 
-    public UserProfile Profile { get; set; }
+    public virtual UserProfile Profile { get; set; }
 
     public DateTime CreatedOn { get; set; }
     
@@ -31,6 +31,8 @@ public class ApplicationUser : IdentityUser, IAuditableEntity, IDeletableEntity
     public DateTime? DeletedOn { get; set; }
 
     public ICollection<UserCommunity> Communities { get; set; } = new List<UserCommunity>();
+    
+    public ICollection<Community> CommunitiesAdministrated { get; set; } = new List<Community>();
 
     public ICollection<CommunityPost> CommunityPosts { get; set; } = new List<CommunityPost>();
 }
