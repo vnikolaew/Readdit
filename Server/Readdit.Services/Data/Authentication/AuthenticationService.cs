@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Readdit.Infrastructure.Common.Repositories;
-using Readdit.Infrastructure.Data.Repositories;
 using Readdit.Infrastructure.Models;
 using Readdit.Infrastructure.Models.Enums;
 using Readdit.Services.Data.Authentication.Models;
@@ -28,24 +27,27 @@ public class AuthenticationService : IAuthenticationService
         _cloudinaryService = cloudinaryService;
     }
 
-    public async Task<string> PasswordLoginAsync(LoginInputModel loginInputModel)
+    public async Task<AuthenticationResultModel> PasswordLoginAsync(LoginInputModel loginInputModel)
     {
         var user = await _userManager.FindByNameAsync(loginInputModel.Username);
         if (user is null)
         {
-            return null;
+            return AuthenticationResultModel
+                .Failure("User with the specified username was not found");
         }
 
         var passwordMatch = await _userManager.CheckPasswordAsync(user, loginInputModel.Password);
         if (!passwordMatch)
         {
-            return null;
+            return AuthenticationResultModel
+                .Failure("Invalid credentials.");
         }
 
-        return _jwtService.GenerateTokenForUser(user);
+        var token = _jwtService.GenerateTokenForUser(user);
+        return AuthenticationResultModel.Success(user.Id, token);
     }
 
-    public async Task<string> RegisterAsync(RegisterInputModel registerInputModel)
+    public async Task<AuthenticationResultModel> RegisterAsync(RegisterInputModel registerInputModel)
     {
         var country = await _countryRepo
             .All()
@@ -79,9 +81,11 @@ public class AuthenticationService : IAuthenticationService
         var result = await _userManager.CreateAsync(user, registerInputModel.Password);
         if (result.Succeeded)
         {
-            return _jwtService.GenerateTokenForUser(user);
+            var token = _jwtService.GenerateTokenForUser(user);
+            return AuthenticationResultModel.Success(user.Id, token);
         }
 
-        return string.Empty;
+        return AuthenticationResultModel
+            .Failure(result.Errors.Select(e => e.Description));
     }
 }
