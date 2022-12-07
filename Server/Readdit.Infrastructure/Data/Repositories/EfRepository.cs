@@ -12,9 +12,9 @@ public class EfRepository<TEntity> : IRepository<TEntity>
         DbSet = Context.Set<TEntity>();
     }
 
-    protected DbSet<TEntity> DbSet { get; set; }
+    protected DbSet<TEntity> DbSet { get; }
 
-    protected ReadditDbContext Context { get; set; }
+    protected ReadditDbContext Context { get; }
 
     public virtual IQueryable<TEntity> All() => DbSet;
 

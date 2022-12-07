@@ -11,7 +11,7 @@ public static class MappingExtensions
     {
         return source is null
             ? throw new ArgumentNullException(nameof(source))
-            : source.ProjectTo(MappingConfiguration.MapperInstance.ConfigurationProvider, null, membersToExpand);
+            : source.ProjectTo(MappingConfiguration.MapperInstance!.ConfigurationProvider, null, membersToExpand);
     }
     
     public static IQueryable<TDestination> To<TDestination>(
@@ -20,7 +20,7 @@ public static class MappingExtensions
     {
         return source is null
             ? throw new ArgumentNullException(nameof(source))
-            : source.ProjectTo<TDestination>(MappingConfiguration.MapperInstance.ConfigurationProvider,  parameters);
+            : source.ProjectTo<TDestination>(MappingConfiguration.MapperInstance!.ConfigurationProvider,  parameters);
     }
 
 }

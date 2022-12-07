@@ -32,16 +32,25 @@ public class CloudinaryService : ICloudinaryService
 
         fileName += DateTime.UtcNow.ToString(CultureInfo.InvariantCulture);
 
+        byte[] destinationImage;
         await using var memoryStream = new MemoryStream();
-        await fileStream.CopyToAsync(memoryStream);
+        fileStream.Position = 0L;
         
-        var uploadParams = new ImageUploadParams()
+        await fileStream.CopyToAsync(memoryStream);
+        destinationImage = memoryStream.ToArray();
+
+        var ms = new MemoryStream(destinationImage);
+        var uploadParams = new ImageUploadParams
         {
-            File = new FileDescription(fileName, memoryStream),
+            File = new FileDescription(fileName, ms),
+            UseFilename = true,
+            Overwrite = true,
             PublicId = fileName
         };
         
         var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+        await ms.DisposeAsync();
+        
         return uploadResult.SecureUrl.AbsoluteUri;
     }
 }
