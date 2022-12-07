@@ -11,7 +11,7 @@ public class ReadditDbContext : IdentityDbContext<ApplicationUser, ApplicationRo
 {
     private static readonly MethodInfo SetIsDeletedQueryFilterMethod =
         typeof(ReadditDbContext)
-            .GetMethod(nameof(SetIsDeletedQueryFilterMethod),
+            .GetMethod(nameof(SetIsDeletedFilter),
                 BindingFlags.NonPublic | BindingFlags.Static)!;
     
     public ReadditDbContext(DbContextOptions<ReadditDbContext> options)
@@ -41,8 +41,6 @@ public class ReadditDbContext : IdentityDbContext<ApplicationUser, ApplicationRo
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        base.OnModelCreating(builder);
-
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         
         EntityIndicesConfiguration.Configure(builder);
@@ -62,6 +60,8 @@ public class ReadditDbContext : IdentityDbContext<ApplicationUser, ApplicationRo
         {
             foreignKey.DeleteBehavior = DeleteBehavior.Restrict;
         }
+        
+        base.OnModelCreating(builder);
     }
 
     private static void SetIsDeletedFilter<T>(ModelBuilder builder)

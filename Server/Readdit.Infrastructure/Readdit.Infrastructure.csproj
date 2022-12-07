@@ -7,12 +7,19 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Microsoft.AspNetCore.Authentication.Core" Version="2.2.0" />
+      <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
       <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.11" />
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.11" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.11" />
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="Data\Migrations" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Readdit.Common\Readdit.Common.csproj" />
     </ItemGroup>
 
 </Project>
