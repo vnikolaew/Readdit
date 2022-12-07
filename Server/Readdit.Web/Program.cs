@@ -1,6 +1,17 @@
+using Newtonsoft.Json;
+using Readdit.Infrastructure;
+using Readdit.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services
+    .AddInfrastructure(builder.Configuration)
+    .AddApplication(builder.Configuration)
+    .AddResponseCaching()
+    .AddControllers()
+    .AddNewtonsoftJson(options =>
+        options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
+
 builder.Services
     .AddEndpointsApiExplorer()
     .AddSwaggerGen();
@@ -9,13 +20,16 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwagger()
+        .UseSwaggerUI();
 }
 
 app.UseHttpsRedirection()
-    .UseAuthorization();
+    .UseAuthentication()
+    .UseAuthorization()
+    .UseResponseCaching();
 
 app.MapControllers();
 
+app.Services.SeedAsync().GetAwaiter().GetResult();
 app.Run();
