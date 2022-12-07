@@ -34,12 +34,12 @@ public class UsersService : IUsersService
             .To<T>()
             .FirstOrDefaultAsync();
 
-    public async Task<ApplicationUser> UpdateUserProfileAsync(
-        string id, string firstName,
+    public async Task<ApplicationUser?> UpdateUserProfileAsync(
+        string userId, string firstName,
         string lastName, string gender, string country,
         string aboutContent, IFormFile? profilePicture)
     {
-        var user = await GetUserByIdWithProfileAsync(id);
+        var user = await GetUserByIdWithProfileAsync(userId);
 
         if (user is null)
         {

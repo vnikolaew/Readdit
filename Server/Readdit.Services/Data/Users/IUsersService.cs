@@ -9,8 +9,8 @@ public interface IUsersService
     
     Task<T?> GetUserInfoAsync<T>(string id);
 
-    Task<ApplicationUser> UpdateUserProfileAsync(
-        string id,
+    Task<ApplicationUser?> UpdateUserProfileAsync(
+        string userId,
         string firstName,
         string lastName,
         string gender,
