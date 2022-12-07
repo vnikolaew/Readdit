@@ -74,7 +74,7 @@ public class AuthenticationService : IAuthenticationService
             Gender = Enum.Parse<Gender>(registerInputModel.Gender),
             Profile = new UserProfile
             {
-                ProfilePictureUrl = profilePictureUrl!,
+                ProfilePictureUrl = profilePictureUrl ?? string.Empty,
             },
         };
 

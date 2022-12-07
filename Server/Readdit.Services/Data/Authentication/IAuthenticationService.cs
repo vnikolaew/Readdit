@@ -4,6 +4,6 @@ namespace Readdit.Services.Data.Authentication;
 
 public interface IAuthenticationService
 {
-    Task<string> PasswordLoginAsync(LoginInputModel loginInputModel);
-    Task<string> RegisterAsync(RegisterInputModel registerInputModel);
+    Task<AuthenticationResultModel> PasswordLoginAsync(LoginInputModel loginInputModel);
+    Task<AuthenticationResultModel> RegisterAsync(RegisterInputModel registerInputModel);
 }
