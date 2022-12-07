@@ -20,6 +20,8 @@ public class CommunityPost : BaseDeletableEntity<string>
 
     public Community Community { get; set; }
 
+    [Url]
+    [MaxLength(200)]
     public string? MediaUrl { get; set; }
 
     [Required]

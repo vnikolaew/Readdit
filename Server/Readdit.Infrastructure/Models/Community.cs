@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Readdit.Infrastructure.Common.Models;
+using Readdit.Infrastructure.Models.Enums;
 
 namespace Readdit.Infrastructure.Models;
 
@@ -16,6 +17,9 @@ public class Community : BaseDeletableEntity<string>
     public string AdminId { get; set; }
     
     public ApplicationUser Admin { get; set; }
+
+    [Required]
+    public CommunityType Type { get; set; }
 
     [Required]
     [MinLength(3)]

@@ -9,10 +9,14 @@ public class CommunityConfiguration : IEntityTypeConfiguration<Community>
     public void Configure(EntityTypeBuilder<Community> builder)
     {
         builder
+            .HasIndex(c => c.Name)
+            .IsUnique();
+            
+        builder
             .HasOne(c => c.Admin)
-            .WithMany()
+            .WithMany(u => u.CommunitiesAdministrated)
             .HasForeignKey(c => c.AdminId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder
             .HasMany(c => c.Tags)
