@@ -58,14 +58,18 @@ public class UsersService : IUsersService
         {
             user.Country = existingCountry;
         }
-        
+
         if (profilePicture != null)
         {
-            string newPictureUrl = await _cloudinaryService.UploadAsync(
+            await DeleteUserPictureIfPresent(user);
+                
+            var uploadResult = await _cloudinaryService.UploadAsync(
                 profilePicture.OpenReadStream(),
                 profilePicture.FileName,
                 profilePicture.ContentType);
-            user.Profile.ProfilePictureUrl = newPictureUrl;
+            
+            user.Profile.ProfilePictureUrl = uploadResult.AbsoluteImageUrl;
+            user.Profile.ProfilePicturePublicId = uploadResult.ImagePublidId;
         }
 
         await _users.SaveChangesAsync();
@@ -77,4 +81,12 @@ public class UsersService : IUsersService
             .All()
             .Include(u => u.Profile)
             .FirstOrDefaultAsync(u => u.Id == id);
+    
+    private async Task DeleteUserPictureIfPresent(ApplicationUser user)
+    {
+        if (!string.IsNullOrEmpty(user.Profile.ProfilePictureUrl))
+        {
+            await _cloudinaryService.DeleteFileAsync(user.Profile.ProfilePicturePublicId);
+        }
+    }
 }
