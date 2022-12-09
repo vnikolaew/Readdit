@@ -30,17 +30,18 @@ public class UserCommunityService : IUserCommunityService
             return null;
         }
 
-        var community = await _communities.All()
+        var community = await _communities
+            .All()
             .FirstOrDefaultAsync(c => c.Id == communityId);
         if (community is null)
         {
             return null;
         }
 
-        var existingUserCommunity = await _userCommunities
+        var isAMember = await _userCommunities
             .AllAsNoTracking()
-            .FirstOrDefaultAsync(uc => uc.UserId == userId && uc.CommunityId == communityId);
-        if (existingUserCommunity is not null)
+            .AnyAsync(uc => uc.UserId == userId && uc.CommunityId == communityId);
+        if (isAMember)
         {
             return null;
         }
@@ -55,8 +56,8 @@ public class UserCommunityService : IUserCommunityService
         };
 
         _userCommunities.Add(userCommunity);
+        
         await _userCommunities.SaveChangesAsync();
-
         return userCommunity;
     }
 
@@ -72,6 +73,7 @@ public class UserCommunityService : IUserCommunityService
         }
 
         _userCommunities.Delete(existingUserCommunity);
+        
         await _userCommunities.SaveChangesAsync();
         return true;
     }
@@ -86,7 +88,7 @@ public class UserCommunityService : IUserCommunityService
             .Include(c => c.Admin)
             .FirstOrDefaultAsync(c => c.Id == communityId
                                       && c.AdminId == approverId);
-        if (community is null || community.AdminId != approverId)
+        if (community is null)
         {
             return null;
         }
@@ -95,16 +97,16 @@ public class UserCommunityService : IUserCommunityService
             .All()
             .FirstOrDefaultAsync(uc => uc.CommunityId == communityId
                                        && uc.UserId == userId);
-        if (existingUserCommunity is null || existingUserCommunity.Status != UserCommunityStatus.Pending)
+        if (existingUserCommunity is null
+            || existingUserCommunity.Status != UserCommunityStatus.Pending)
         {
             return null;
         }
 
         existingUserCommunity.Status = UserCommunityStatus.Approved;
-        
         _userCommunities.Update(existingUserCommunity);
-        await _userCommunities.SaveChangesAsync();
         
+        await _userCommunities.SaveChangesAsync();
         return existingUserCommunity;
     }
 }

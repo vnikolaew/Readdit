@@ -16,5 +16,5 @@ public class UpdatePostInputModel
     [MaxLength(1000)]
     public string Content { get; set; }
     
-    public IFormFile Media { get; set; }
+    public IFormFile? Media { get; set; }
 }

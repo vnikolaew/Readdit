@@ -6,6 +6,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Readdit.Services", "Readdit
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Readdit.Infrastructure", "Readdit.Infrastructure\Readdit.Infrastructure.csproj", "{42A2DD8F-D73E-4341-B84D-B25FBDA005C2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Readdit.Common", "Readdit.Common\Readdit.Common.csproj", "{F44C25FE-CB5E-4488-A7A5-8568C1AB9B12}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SendGridTesting", "SendGridTesting\SendGridTesting.csproj", "{AFD2AF99-048E-449B-B9E0-D0A0C4FC04D1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +28,13 @@ Global
 		{42A2DD8F-D73E-4341-B84D-B25FBDA005C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{42A2DD8F-D73E-4341-B84D-B25FBDA005C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{42A2DD8F-D73E-4341-B84D-B25FBDA005C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F44C25FE-CB5E-4488-A7A5-8568C1AB9B12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F44C25FE-CB5E-4488-A7A5-8568C1AB9B12}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F44C25FE-CB5E-4488-A7A5-8568C1AB9B12}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F44C25FE-CB5E-4488-A7A5-8568C1AB9B12}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AFD2AF99-048E-449B-B9E0-D0A0C4FC04D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFD2AF99-048E-449B-B9E0-D0A0C4FC04D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFD2AF99-048E-449B-B9E0-D0A0C4FC04D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFD2AF99-048E-449B-B9E0-D0A0C4FC04D1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
