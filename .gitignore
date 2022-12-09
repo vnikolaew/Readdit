@@ -291,3 +291,4 @@ __pycache__/
 
 # Custom Files
 appsettings.Development.json
+/Server/SendGridTesting/
