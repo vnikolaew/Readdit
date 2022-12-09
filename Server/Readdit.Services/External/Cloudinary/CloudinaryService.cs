@@ -1,6 +1,6 @@
-﻿using System.Globalization;
-using CloudinaryDotNet;
+﻿using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
+using ImageUploadResult = Readdit.Services.External.Cloudinary.Models.ImageUploadResult;
 
 namespace Readdit.Services.External.Cloudinary;
 
@@ -8,49 +8,70 @@ public class CloudinaryService : ICloudinaryService
 {
     private readonly string[] _validTypes =
     {
-        "image/x-png", "image/gif", "image/jpeg", "image/jpg", "image/png", "image/gif", "image/svg",
+        "image/x-png", "image/gif", "image/jpeg", "image/jpg", "image/png", "image/gif", "image/svg", "image/webp"
     };
+
+    private static string Timestamp
+        => DateTime.UtcNow.ToShortDateString();
 
     private readonly CloudinaryDotNet.Cloudinary _cloudinary;
 
     public CloudinaryService(CloudinaryDotNet.Cloudinary cloudinary)
-    {
-        _cloudinary = cloudinary;
-    }
+        => _cloudinary = cloudinary;
 
-    public bool IsFileValid(string contentType)
-    {
-        return _validTypes.Any(t => t == contentType);
-    }
+    private bool IsFileValid(string contentType)
+        => _validTypes.Any(t => t == contentType);
 
-    public async Task<string> UploadAsync(Stream fileStream, string fileName, string contentType)
+    public async Task<ImageUploadResult> UploadAsync(Stream? fileStream, string fileName, string contentType)
     {
         if (fileStream is null || !IsFileValid(contentType))
         {
-            return string.Empty;
+            return null!;
         }
 
-        fileName += DateTime.UtcNow.ToString(CultureInfo.InvariantCulture);
+        var newFileName = AppendTimestamp(fileName);
 
-        byte[] destinationImage;
         await using var memoryStream = new MemoryStream();
         fileStream.Position = 0L;
         
         await fileStream.CopyToAsync(memoryStream);
-        destinationImage = memoryStream.ToArray();
+        var destinationImage = memoryStream.ToArray();
 
         var ms = new MemoryStream(destinationImage);
         var uploadParams = new ImageUploadParams
         {
-            File = new FileDescription(fileName, ms),
+            File = new FileDescription(newFileName, ms),
+            Format = GetFileExtension(fileName),
             UseFilename = true,
             Overwrite = true,
-            PublicId = fileName
+            PublicId = newFileName
         };
         
         var uploadResult = await _cloudinary.UploadAsync(uploadParams);
         await ms.DisposeAsync();
         
-        return uploadResult.SecureUrl.AbsoluteUri;
+        return new ImageUploadResult
+        {
+            AbsoluteImageUrl = uploadResult.SecureUrl.AbsoluteUri,
+            ImagePublidId = uploadResult.PublicId
+        };
+    }
+
+    public async Task<bool> DeleteFileAsync(string filePublicId)
+    {
+        var result = await _cloudinary.DestroyAsync(new DeletionParams(filePublicId));
+        return true;
+    }
+
+    private string AppendTimestamp(string fileName)
+    {
+        var dotIndex = fileName.LastIndexOf('.');
+        return $"{fileName[..dotIndex]}_{Timestamp}";
+    }
+
+    private string GetFileExtension(string fileName)
+    {
+        var dotIndex = fileName.LastIndexOf('.');
+        return $"{fileName[(dotIndex + 1)..]}";
     }
 }

@@ -1,8 +1,10 @@
-﻿namespace Readdit.Services.External.Cloudinary;
+﻿using Readdit.Services.External.Cloudinary.Models;
+
+namespace Readdit.Services.External.Cloudinary;
 
 public interface ICloudinaryService
 {
-    bool IsFileValid(string contentType);
+    Task<ImageUploadResult> UploadAsync(Stream? fileStream, string fileName, string contentType);
 
-    Task<string> UploadAsync(Stream fileStream, string fileName, string contentType);
+    Task<bool> DeleteFileAsync(string filePublicId);
 }
