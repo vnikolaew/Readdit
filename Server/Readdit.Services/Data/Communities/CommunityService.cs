@@ -6,6 +6,7 @@ using Readdit.Infrastructure.Models.Enums;
 using Readdit.Services.Data.Posts;
 using Readdit.Services.Data.Tags;
 using Readdit.Services.External.Cloudinary;
+using Readdit.Services.External.Cloudinary.Models;
 using Readdit.Services.Mapping;
 
 namespace Readdit.Services.Data.Communities;
@@ -13,6 +14,7 @@ namespace Readdit.Services.Data.Communities;
 public class CommunityService : ICommunityService
 {
     private readonly IDeletableEntityRepository<Community> _communities;
+    private readonly IDeletableEntityRepository<UserCommunity> _userCommunities;
     private readonly IRepository<CommunityPost> _posts;
     private readonly IRepository<ApplicationUser> _users;
     
@@ -26,7 +28,8 @@ public class CommunityService : ICommunityService
         ICloudinaryService cloudinaryService,
         ITagsService tagsService,
         IPostsService postsService,
-        IRepository<CommunityPost> posts)
+        IRepository<CommunityPost> posts,
+        IDeletableEntityRepository<UserCommunity> userCommunities)
     {
         _communities = communities;
         _users = users;
@@ -34,6 +37,7 @@ public class CommunityService : ICommunityService
         _tagsService = tagsService;
         _postsService = postsService;
         _posts = posts;
+        _userCommunities = userCommunities;
     }
 
     public async Task<Community?> CreateAsync(
@@ -52,10 +56,10 @@ public class CommunityService : ICommunityService
             return null;
         }
 
-        var newPictureUrl = string.Empty;
+        ImageUploadResult? uploadResult = null;
         if (picture is not null)
         {
-            newPictureUrl = await _cloudinaryService.UploadAsync(
+            uploadResult = await _cloudinaryService.UploadAsync(
                 picture.OpenReadStream(),
                 picture.FileName,
                 picture.ContentType);
@@ -66,8 +70,15 @@ public class CommunityService : ICommunityService
             Admin = admin,
             Name = name,
             Description = description!,
-            PictureUrl = newPictureUrl,
+            PictureUrl = uploadResult?.AbsoluteImageUrl ?? string.Empty,
+            PicturePublicId = uploadResult?.ImagePublidId ?? string.Empty,
             Type = type
+        };
+        var userCommunity = new UserCommunity
+        {
+            User = admin,
+            Community = community,
+            Status = UserCommunityStatus.Approved
         };
 
         var existingTags = await _tagsService.GetAllByNamesAsync(tags);
@@ -78,8 +89,12 @@ public class CommunityService : ICommunityService
         }).ToList();
 
         community.Tags = communityTags;
+        
         _communities.Add(community);
+        _userCommunities.Add(userCommunity);
+        
         await _communities.SaveChangesAsync();
+        await _userCommunities.SaveChangesAsync();
 
         return community;
     }
@@ -109,22 +124,21 @@ public class CommunityService : ICommunityService
             return community;
         }
 
-        var newPictureUrl = community.PictureUrl;
         if (picture is not null)
         {
-            newPictureUrl = await _cloudinaryService.UploadAsync(
+            await DeleteCommunityPictureIfPresent(community);
+            
+            var uploadResult = await _cloudinaryService.UploadAsync(
                 picture.OpenReadStream(),
                 picture.FileName,
                 picture.ContentType
             );
+            
+            community.PictureUrl = uploadResult.AbsoluteImageUrl;
+            community.PicturePublicId = uploadResult.ImagePublidId;
         }
 
         var existingTags = await _tagsService.GetAllByNamesAsync(tags);
-
-        community.Description = description;
-        community.PictureUrl = newPictureUrl;
-        community.Type = type;
-        
         var communityTags = existingTags
             .Select(t => new CommunityTag
             {
@@ -134,7 +148,10 @@ public class CommunityService : ICommunityService
             .ToList();
         
         community.Tags.Clear();
+        
         community.Tags = communityTags;
+        community.Description = description;
+        community.Type = type;
 
         _communities.Update(community);
         await _communities.SaveChangesAsync();
@@ -161,9 +178,11 @@ public class CommunityService : ICommunityService
         }
         
         _communities.Delete(community);
+        await DeleteCommunityPictureIfPresent(community);
+        await DeletePostsByCommunityId(communityId, user.Id);
+        
         await _communities.SaveChangesAsync();
         
-        await DeletePostsByCommunityId(communityId, user.Id);
         return true;
     }
 
@@ -177,14 +196,22 @@ public class CommunityService : ICommunityService
     private async Task DeletePostsByCommunityId(string communityId, string userId)
     {
         var postIds = await _posts
-            .All()
+            .AllAsNoTracking()
             .Where(p => p.CommunityId == communityId)
-            .Select(p => p.Id)
+            .Select(p => new { p.Id })
             .ToListAsync();
 
-        foreach (var postId in postIds)
+        foreach (var postIdInfo in postIds)
         {
-            await _postsService.DeleteAsync(userId, postId);
+            await _postsService.DeleteAsync(userId, postIdInfo.Id);
+        }
+    }
+    
+    private async Task DeleteCommunityPictureIfPresent(Community community)
+    {
+        if (!string.IsNullOrEmpty(community.PictureUrl))
+        {
+            await _cloudinaryService.DeleteFileAsync(community.PicturePublicId);
         }
     }
 }
