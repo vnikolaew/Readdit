@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Readdit.Services.Data.Posts.Communities.Models;
 
 namespace Readdit.Services.Data.Communities.Models;
 

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Readdit.Infrastructure.Models.Enums;
 
-namespace Readdit.Services.Data.Posts.Communities.Models;
+namespace Readdit.Services.Data.Communities.Models;
 
 public abstract class BaseCommunityInputModel
 {
