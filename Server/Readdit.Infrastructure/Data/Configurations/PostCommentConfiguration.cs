@@ -9,6 +9,10 @@ public class PostCommentConfiguration : IEntityTypeConfiguration<PostComment>
     public void Configure(EntityTypeBuilder<PostComment> builder)
     {
         builder
+            .Property(pc => pc.VoteScore)
+            .HasDefaultValue(0);
+            
+        builder
             .HasOne(pc => pc.Post)
             .WithMany(p => p.Comments)
             .HasForeignKey(pc => pc.PostId)

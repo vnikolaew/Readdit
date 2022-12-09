@@ -9,6 +9,10 @@ public class CommunityPostConfiguration : IEntityTypeConfiguration<CommunityPost
     public void Configure(EntityTypeBuilder<CommunityPost> builder)
     {
         builder
+            .Property(p => p.VoteScore)
+            .HasDefaultValue(0);
+            
+        builder
             .HasMany(p => p.Votes)
             .WithOne(v => v.Post)
             .HasForeignKey(v => v.PostId)
