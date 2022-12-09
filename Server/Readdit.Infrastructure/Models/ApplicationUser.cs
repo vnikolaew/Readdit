@@ -20,7 +20,7 @@ public class ApplicationUser : IdentityUser, IAuditableEntity, IDeletableEntity
     [Required]
     public Country Country { get; set; }
 
-    public virtual UserProfile Profile { get; set; }
+    public UserProfile Profile { get; set; }
 
     public DateTime CreatedOn { get; set; }
     

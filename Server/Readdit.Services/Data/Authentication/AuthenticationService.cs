@@ -1,30 +1,37 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Readdit.Infrastructure.Common.Repositories;
+using Microsoft.AspNetCore.WebUtilities;
+using Readdit.Common;
 using Readdit.Infrastructure.Models;
 using Readdit.Infrastructure.Models.Enums;
 using Readdit.Services.Data.Authentication.Models;
+using Readdit.Services.Data.Countries;
 using Readdit.Services.External.Cloudinary;
+using Readdit.Services.External.Cloudinary.Models;
+using Readdit.Services.External.Messaging;
 
 namespace Readdit.Services.Data.Authentication;
 
 public class AuthenticationService : IAuthenticationService
 {
     private readonly UserManager<ApplicationUser> _userManager;
-    private readonly IRepository<Country> _countryRepo;
+    private readonly ICountryService _countryService;
     private readonly ICloudinaryService _cloudinaryService;
+    private readonly IEmailSender _emailSender;
     private readonly IJwtService _jwtService;
 
     public AuthenticationService(
         UserManager<ApplicationUser> userManager,
         IJwtService jwtService,
-        IRepository<Country> countryRepo,
-        ICloudinaryService cloudinaryService)
+        ICloudinaryService cloudinaryService,
+        IEmailSender emailSender,
+        ICountryService countryService)
     {
         _userManager = userManager;
         _jwtService = jwtService;
-        _countryRepo = countryRepo;
+        _countryService = countryService;
         _cloudinaryService = cloudinaryService;
+        _emailSender = emailSender;
+        _countryService = countryService;
     }
 
     public async Task<AuthenticationResultModel> PasswordLoginAsync(LoginInputModel loginInputModel)
@@ -43,22 +50,21 @@ public class AuthenticationService : IAuthenticationService
                 .Failure("Invalid credentials.");
         }
 
+        user.Country = (await _countryService.GetByUserAsync(user.Id))!;
         var token = _jwtService.GenerateTokenForUser(user);
         return AuthenticationResultModel.Success(user.Id, token);
     }
 
-    public async Task<AuthenticationResultModel> RegisterAsync(RegisterInputModel registerInputModel)
+    public async Task<AuthenticationResultModel> RegisterAsync(RegisterInputModel registerModel)
     {
-        var country = await _countryRepo
-            .All()
-            .FirstOrDefaultAsync(c => c.Name == registerInputModel.Country);
+        var country = await _countryService.GetByNameAsync(registerModel.Country);
 
-        string? profilePictureUrl = null;
-        if (registerInputModel.ProfilePicture != null)
+        ImageUploadResult? uploadResult = null;
+        if (registerModel.ProfilePicture != null)
         {
-            var file = registerInputModel.ProfilePicture;
+            var file = registerModel.ProfilePicture;
             
-            profilePictureUrl = await _cloudinaryService.UploadAsync(
+            uploadResult = await _cloudinaryService.UploadAsync(
                 file.OpenReadStream(),
                 file.FileName,
                 file.ContentType);
@@ -66,26 +72,67 @@ public class AuthenticationService : IAuthenticationService
 
         var user = new ApplicationUser
         {
-            UserName = registerInputModel.Username,
-            FirstName = registerInputModel.FirstName,
-            LastName = registerInputModel.LastName,
+            UserName = registerModel.Username,
+            FirstName = registerModel.FirstName,
+            LastName = registerModel.LastName,
             Country = country!,
-            Email = registerInputModel.Email,
-            Gender = Enum.Parse<Gender>(registerInputModel.Gender),
+            Email = registerModel.Email,
+            Gender = Enum.Parse<Gender>(registerModel.Gender),
             Profile = new UserProfile
             {
-                ProfilePictureUrl = profilePictureUrl ?? string.Empty,
+                ProfilePictureUrl = uploadResult?.AbsoluteImageUrl ?? string.Empty,
+                ProfilePicturePublicId = uploadResult?.ImagePublidId ?? string.Empty
             },
         };
 
-        var result = await _userManager.CreateAsync(user, registerInputModel.Password);
-        if (result.Succeeded)
+        var result = await _userManager.CreateAsync(user, registerModel.Password);
+        if (!result.Succeeded)
         {
-            var token = _jwtService.GenerateTokenForUser(user);
-            return AuthenticationResultModel.Success(user.Id, token);
+            return AuthenticationResultModel
+                .Failure(result.Errors.Select(e => e.Description));
+        }
+        
+        var emailConfirmationToken = await _userManager
+            .GenerateEmailConfirmationTokenAsync(user);
+
+        await _emailSender.SendEmailAsync(
+            GlobalConstants.ReadditEmail,
+            GlobalConstants.ApplicationName,
+            user.Email,
+            GlobalMessages.ConfirmProfileTitleMessage,
+            string.Format(
+                GlobalMessages.ConfirmProfileMessage,
+                user.UserName,
+                GetFullEmailConfirmationUrl(
+                    registerModel.EmailConfirmationUrl,
+                    emailConfirmationToken,
+                    user.Id)));
+            
+        var token = _jwtService.GenerateTokenForUser(user);
+        return AuthenticationResultModel.Success(user.Id, token);
+    }
+
+    public async Task<bool> ConfirmEmailAsync(string userId, string emailConfirmToken)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user is null)
+        {
+            return false;
         }
 
-        return AuthenticationResultModel
-            .Failure(result.Errors.Select(e => e.Description));
+        var result = await _userManager.ConfirmEmailAsync(user, emailConfirmToken);
+        return result.Succeeded;
     }
+
+    private static string GetFullEmailConfirmationUrl(
+        string emailConfirmEmail,
+        string token,
+        string userId)
+        => QueryHelpers.AddQueryString(
+            emailConfirmEmail,
+            new Dictionary<string, string?>
+            {
+                { nameof(token), token },
+                { nameof(userId), userId },
+            });
 }
