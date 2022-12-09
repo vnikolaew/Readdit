@@ -10,8 +10,23 @@ public static class ResultExtensions
             ? new OkObjectResult(new { authResultModel.Token, authResultModel.UserId })
             : new BadRequestObjectResult(new { authResultModel.Errors });
     
+    public static IActionResult OkOrBadRequest<T>(this T result)
+        => result is null
+            ? new BadRequestResult()
+            : new OkObjectResult(result);
+    
     public static IActionResult OkOrNotFound<T>(this T result)
         => result is null
             ? new NotFoundResult()
             : new OkObjectResult(result);
+    
+    public static IActionResult OkOrBadRequest(this bool success)
+        => success 
+            ? new OkResult()
+            : new BadRequestResult();
+    
+    public static IActionResult OkOrNotFound(this bool success)
+        => success 
+            ? new OkResult()
+            : new NotFoundResult();
 }

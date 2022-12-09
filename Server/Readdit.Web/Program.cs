@@ -14,7 +14,8 @@ builder.Services
 
 builder.Services
     .AddEndpointsApiExplorer()
-    .AddSwaggerGen();
+    .AddSwaggerGen()
+    .AddCors();
 
 var app = builder.Build();
 
@@ -25,6 +26,12 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection()
+    .UseCors(options =>
+        options
+        .WithOrigins("http://localhost:3000")
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowCredentials())
     .UseAuthentication()
     .UseAuthorization()
     .UseResponseCaching();

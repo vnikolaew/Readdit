@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
+using Readdit.Common;
 using Readdit.Infrastructure.Models;
 
 namespace Readdit.Services.Data.Authentication;
@@ -26,6 +27,7 @@ public class JwtService : IJwtService
                 new(ClaimTypes.Email, user.Email),
                 new(ClaimTypes.NameIdentifier, user.Id),
                 new(ClaimTypes.Name, user.UserName),
+                new(GlobalConstants.Claims.CountryClaim, user.Country.Name)
             }),
             Expires = DateTime.Now.AddHours(_jwtSettings.RelativeExpirationInHours),
             SigningCredentials = credentials,
