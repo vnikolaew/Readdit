@@ -6,14 +6,20 @@ using Microsoft.Extensions.DependencyInjection;
 using Readdit.Services.Data.Authentication;
 using Readdit.Services.Data.Comments;
 using Readdit.Services.Data.CommentVotes;
+using Readdit.Services.Data.Common;
 using Readdit.Services.Data.Communities;
+using Readdit.Services.Data.Countries;
+using Readdit.Services.Data.PostFeed;
 using Readdit.Services.Data.Posts;
 using Readdit.Services.Data.PostVotes;
+using Readdit.Services.Data.Search;
 using Readdit.Services.Data.Tags;
 using Readdit.Services.Data.UserCommunities;
 using Readdit.Services.Data.Users;
 using Readdit.Services.External.Cloudinary;
+using Readdit.Services.External.Messaging;
 using Readdit.Services.Mapping;
+using SendGrid.Extensions.DependencyInjection;
 
 namespace Readdit.Services;
 
@@ -23,20 +29,25 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
         => services
+            .AddMappings()
             .AddImageStorage(configuration)
+            .AddMailing(configuration)
             .AddJwtAuthentication(configuration)
+            .AddScoped<IUnitOfWork, UnitOfWork>()
             .AddTransient<IAuthenticationService, AuthenticationService>()
             .AddTransient<IUsersService, UsersService>()
+            .AddTransient<ISearchService, SearchService>()
             .AddTransient<ICommunityService, CommunityService>()
             .AddTransient<IUserCommunityService, UserCommunityService>()
             .AddTransient<IPostsService, PostsService>()
+            .AddTransient<IPostFeedService, PostFeedService>()
             .AddTransient<IPostVotesService, PostVotesService>()
             .AddTransient<ITagsService, TagsService>()
             .AddTransient<ICommentVotesService, CommentVotesService>()
             .AddTransient<ICommentsService, CommentsService>()
+            .AddTransient<ICountryService, CountryService>()
             .AddTransient<IJwtService, JwtService>()
-            .AddTransient<ICloudinaryService, CloudinaryService>()
-            .AddMappings();
+            .AddTransient<ICloudinaryService, CloudinaryService>();
 
     private static IServiceCollection AddImageStorage(
         this IServiceCollection services,
@@ -51,6 +62,19 @@ public static class DependencyInjection
         }));
         
         return services;
+    }
+
+    private static IServiceCollection AddMailing(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        var settings = services.AddSettings<SendGridSettings>(configuration);
+        services.AddSendGrid(options =>
+        {
+            options.ApiKey = settings.ApiKey;
+        });
+        
+        return services.AddScoped<IEmailSender, SendGridEmailSender>();
     }
 
     private static TSettings AddSettings<TSettings>(
