@@ -10,14 +10,12 @@ public class UsersController : ApiController
     private readonly IUsersService _usersService;
 
     public UsersController(IUsersService usersService)
-    {
-        _usersService = usersService;
-    }
+        => _usersService = usersService;
 
     [HttpGet]
     [Route("{userId}")]
     [ResponseCache(Duration = 60 * 10, Location = ResponseCacheLocation.Any)]
-    public async Task<IActionResult> Details([FromRoute]string userId)
+    public async Task<IActionResult> Details(string userId)
     {
         var userDetails = await _usersService.GetUserInfoAsync<UserDetailsServiceModel>(userId);
         return userDetails.OkOrNotFound();
@@ -35,7 +33,9 @@ public class UsersController : ApiController
             model.Country,
             model.AboutContent,
             model.Picture);
-        
-        return NoContent();
+
+        return user is null
+            ? BadRequest()
+            : AcceptedAtAction(nameof(Details), new { userId = user.Id }, user);
     }
 }

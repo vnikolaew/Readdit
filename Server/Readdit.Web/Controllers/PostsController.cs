@@ -11,12 +11,10 @@ public class PostsController : ApiController
     private readonly IPostsService _postsService;
 
     public PostsController(IPostsService postsService)
-    {
-        _postsService = postsService;
-    }
+        => _postsService = postsService;
 
     [HttpPost]
-    public async Task<IActionResult> Create(CreatePostInputModel model)
+    public async Task<IActionResult> Create([FromForm] CreatePostInputModel model)
     {
         var post = await _postsService.CreateAsync(
             User.GetId()!,
@@ -33,6 +31,7 @@ public class PostsController : ApiController
 
     [HttpGet]
     [Route("{postId}")]
+    [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
     public async Task<IActionResult> Details([FromRoute]string postId)
     {
         var post = await _postsService.GetPostDetailsByIdAsync<CommunityPost>(postId);
