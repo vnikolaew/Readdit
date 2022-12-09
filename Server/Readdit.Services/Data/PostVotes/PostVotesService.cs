@@ -2,23 +2,40 @@
 using Readdit.Infrastructure.Common.Repositories;
 using Readdit.Infrastructure.Models;
 using Readdit.Infrastructure.Models.Enums;
+using Readdit.Services.Data.Common;
 
 namespace Readdit.Services.Data.PostVotes;
 
 public class PostVotesService : IPostVotesService
 {
     private readonly IRepository<PostVote> _postVotes;
+    private readonly IRepository<CommunityPost> _posts;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public PostVotesService(IRepository<PostVote> postVotes)
+    public PostVotesService(
+        IRepository<PostVote> postVotes,
+        IRepository<CommunityPost> posts,
+        IUnitOfWork unitOfWork)
     {
         _postVotes = postVotes;
+        _posts = posts;
+        _unitOfWork = unitOfWork;
     }
 
-    public async Task<PostVote> UpVoteAsync(string userId, string postId)
+    public async Task<PostVote?> UpVoteAsync(string userId, string postId)
     {
         var postVote = await _postVotes
             .All()
             .FirstOrDefaultAsync(pv => pv.UserId == userId && pv.PostId == postId);
+        
+        var post = await _posts
+            .All()
+            .FirstOrDefaultAsync(p => p.Id == postId);
+
+        if (post is null || postVote?.Type == VoteType.Up)
+        {
+            return null;
+        }
 
         if (postVote is null)
         {
@@ -29,29 +46,59 @@ public class PostVotesService : IPostVotesService
                 Type = VoteType.Up
             };
             
+            post.VoteScore++;
             _postVotes.Add(postVote);
-            await _postVotes.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync();
 
-            return postVote;
-        }
-
-        if (postVote.Type == VoteType.Up)
-        {
             return postVote;
         }
         
         postVote.Type = VoteType.Up;
+        post.VoteScore += 2;
+        
         _postVotes.Update(postVote);
-        await _postVotes.SaveChangesAsync();
+        await _unitOfWork.SaveChangesAsync();
 
         return postVote;
     }
 
-    public async Task<PostVote> DownVoteAsync(string userId, string postId)
+    public async Task<bool> RemoveUpVoteAsync(string userId, string postId)
+    {
+        var postVote = await _postVotes
+            .All()
+            .FirstOrDefaultAsync(pv => pv.UserId == userId
+                                       && pv.PostId == postId
+                                       && pv.Type == VoteType.Up);
+        var post = await _posts
+            .All()
+            .FirstOrDefaultAsync(p => p.Id == postId);
+        
+        if (post is null || postVote is null)
+        {
+            return false;
+        }
+
+        post.VoteScore--;
+        _postVotes.Delete(postVote);
+        
+        await _unitOfWork.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<PostVote?> DownVoteAsync(string userId, string postId)
     {
         var postVote = await _postVotes
             .All()
             .FirstOrDefaultAsync(pv => pv.UserId == userId && pv.PostId == postId);
+        
+        var post = await _posts
+            .All()
+            .FirstOrDefaultAsync(p => p.Id == postId);
+        
+        if (post is null || postVote?.Type == VoteType.Down)
+        {
+            return null;
+        }
 
         if (postVote is null)
         {
@@ -61,22 +108,42 @@ public class PostVotesService : IPostVotesService
                 PostId = postId,
                 Type = VoteType.Down
             };
-            
+
+            post.VoteScore--;
             _postVotes.Add(postVote);
-            await _postVotes.SaveChangesAsync();
-
-            return postVote;
-        }
-
-        if (postVote.Type == VoteType.Down)
-        {
+            
+            await _unitOfWork.SaveChangesAsync();
             return postVote;
         }
         
         postVote.Type = VoteType.Down;
+        post.VoteScore -= 2;
         _postVotes.Update(postVote);
         
-        await _postVotes.SaveChangesAsync();
+        await _unitOfWork.SaveChangesAsync();
         return postVote;
+    }
+
+    public async Task<bool> RemoveDownVoteAsync(string userId, string postId)
+    {
+        var postVote = await _postVotes
+            .All()
+            .FirstOrDefaultAsync(pv => pv.UserId == userId
+                                       && pv.PostId == postId
+                                       && pv.Type == VoteType.Down);
+        var post = await _posts
+            .All()
+            .FirstOrDefaultAsync(p => p.Id == postId);
+        
+        if (post is null || postVote is null)
+        {
+            return false;
+        }
+
+        post.VoteScore++;
+        _postVotes.Delete(postVote);
+        
+        await _unitOfWork.SaveChangesAsync();
+        return true;
     }
 }
