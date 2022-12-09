@@ -30,4 +30,13 @@ public class IdentityController : ApiController
         var result = await _authenticationService.PasswordLoginAsync(loginInputModel);
         return result.ToActionResult();
     }
+
+    [HttpPost]
+    [Route("confirmEmail")]
+    public async Task<IActionResult> ConfirmEmailAsync(
+        [FromQuery] string userId, [FromQuery] string token)
+    {
+        var success = await _authenticationService.ConfirmEmailAsync(userId, token);
+        return success ? Ok() : BadRequest();
+    }
 }
