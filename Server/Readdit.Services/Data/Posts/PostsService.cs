@@ -6,6 +6,7 @@ using Readdit.Infrastructure.Models.Enums;
 using Readdit.Services.Data.Tags;
 using Readdit.Services.External.Cloudinary;
 using Readdit.Services.Mapping;
+using ImageUploadResult = Readdit.Services.External.Cloudinary.Models.ImageUploadResult;
 
 namespace Readdit.Services.Data.Posts;
 
@@ -78,10 +79,10 @@ public class PostsService : IPostsService
             return null;
         }
 
-        string? postPictureUrl = default;
+        ImageUploadResult? uploadResult = null;
         if (media is not null)
         {
-            postPictureUrl = await _cloudinaryService.UploadAsync(
+            uploadResult = await _cloudinaryService.UploadAsync(
                 media.OpenReadStream(),
                 media.FileName,
                 media.ContentType);
@@ -91,7 +92,8 @@ public class PostsService : IPostsService
         {
             Community = community,
             Author = user,
-            MediaUrl = postPictureUrl,
+            MediaUrl = uploadResult?.AbsoluteImageUrl ?? string.Empty,
+            MediaPublicId = uploadResult?.ImagePublidId ?? string.Empty,
             Title = title,
             Content = content
         };
@@ -104,6 +106,7 @@ public class PostsService : IPostsService
         }).ToList();
         
         post.Tags = postTags;
+        
         _posts.Add(post);
         await _posts.SaveChangesAsync();
         
@@ -123,9 +126,13 @@ public class PostsService : IPostsService
         await DeletePostVotes(postId);
         await DeletePostComments(postId);
         await DeletePostTags(postId);
+        await DeletePostMediaIfPresent(post);
+        
+        await _cloudinaryService.DeleteFileAsync(post.MediaPublicId);
 
         _posts.Delete(post);
         await _posts.SaveChangesAsync();
+        
         return true;
     }
 
@@ -146,12 +153,18 @@ public class PostsService : IPostsService
 
         post.Title = title;
         post.Content = content;
+
         if (media is not null)
         {
-            post.MediaUrl = await _cloudinaryService.UploadAsync(
+            await DeletePostMediaIfPresent(post);
+            
+            var uploadResult = await _cloudinaryService.UploadAsync(
                 media.OpenReadStream(),
                 media.FileName,
                 media.ContentType);
+
+            post.MediaUrl = uploadResult.AbsoluteImageUrl;
+            post.MediaPublicId = uploadResult.ImagePublidId;
         }
         
         _posts.Update(post);
@@ -171,8 +184,6 @@ public class PostsService : IPostsService
         {
             _postVotes.Delete(postVote);
         }
-
-        await _postVotes.SaveChangesAsync();
     }
     
     private async Task DeletePostTags(string postId)
@@ -186,8 +197,6 @@ public class PostsService : IPostsService
         {
             _postTags.Delete(postTag);
         }
-
-        await _postTags.SaveChangesAsync();
     }
     
     private async Task DeletePostComments(string postId)
@@ -201,8 +210,6 @@ public class PostsService : IPostsService
         {
             _postComments.Delete(postComment);
         }
-
-        await _postComments.SaveChangesAsync();
     }
 
     public Task<T?> GetPostDetailsByIdAsync<T>(string postId)
@@ -220,4 +227,12 @@ public class PostsService : IPostsService
             .ThenByDescending(p => p.Votes.Count)
             .To<T>()
             .ToListAsync();
+
+    private async Task DeletePostMediaIfPresent(CommunityPost post)
+    {
+        if (!string.IsNullOrEmpty(post.MediaUrl))
+        {
+            await _cloudinaryService.DeleteFileAsync(post.MediaPublicId);
+        }
+    }
 }
