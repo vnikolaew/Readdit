@@ -11,9 +11,7 @@ public class CommunitiesController : ApiController
     private readonly ICommunityService _communityService;
 
     public CommunitiesController(ICommunityService communityService)
-    {
-        _communityService = communityService;
-    }
+        => _communityService = communityService;
 
     [HttpPost]
     public async Task<IActionResult> Create([FromForm] CreateCommunityInputModel model)
@@ -41,8 +39,16 @@ public class CommunitiesController : ApiController
     }
     
     [HttpPut]
-    public async Task<IActionResult> Update([FromForm] UpdateCommunityInputModel model)
+    [Route("{communityId}")]
+    public async Task<IActionResult> Update(
+        [FromForm] UpdateCommunityInputModel model,
+        string communityId)
     {
+        if (communityId != model.CommunityId)
+        {
+            return BadRequest();
+        }
+        
         var community = await _communityService.UpdateAsync(
             User.GetId()!,
             model.CommunityId,
@@ -53,14 +59,16 @@ public class CommunitiesController : ApiController
 
         return community is null
             ? BadRequest()
-            : Ok(community);
+            : AcceptedAtAction(nameof(Details), new { communityId = community.Id }, community);
     }
 
     [HttpDelete]
     [Route("{communityId}")]
     public async Task<IActionResult> Delete([FromRoute] string communityId)
     {
-        var success = await _communityService.DeleteAsync(User.GetId()!, communityId);
-        return success ? Ok() : BadRequest();
+        var success = await _communityService
+            .DeleteAsync(User.GetId()!, communityId);
+
+        return success.OkOrBadRequest();
     }
 }
