@@ -20,6 +20,9 @@ public class RegisterInputModel
     [Required]
     [EmailAddress]
     public string Email { get; set; }
+
+    [Required]
+    public string EmailConfirmationUrl { get; set; }
     
     [Required]
     [DataType(DataType.Password)]
