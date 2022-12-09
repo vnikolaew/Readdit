@@ -18,6 +18,10 @@ public class UserProfile : BaseDeletableEntity<string>
     [Required]
     [Url]
     public string ProfilePictureUrl { get; set; }
+    
+    [Required]
+    [MaxLength(50)]
+    public string ProfilePicturePublicId { get; set; }
 
     [MaxLength(200)]
     public string? AboutContent { get; set; }

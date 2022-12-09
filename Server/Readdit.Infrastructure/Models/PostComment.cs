@@ -23,6 +23,9 @@ public class PostComment : BaseDeletableEntity<string>
     [Required]
     [MaxLength(2000)]
     public string Content { get; set; }
+    
+    [Required]
+    public int VoteScore { get; set; }
 
     public ICollection<CommentVote> Votes { get; set; } = new List<CommentVote>();
 }

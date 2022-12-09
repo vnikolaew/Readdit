@@ -31,6 +31,10 @@ public class Community : BaseDeletableEntity<string>
     [Required]
     [Url]
     public string PictureUrl { get; set; }
+    
+    [Required]
+    [MaxLength(50)]
+    public string PicturePublicId { get; set; }
 
     public ICollection<CommunityTag> Tags { get; set; } = new List<CommunityTag>();
 

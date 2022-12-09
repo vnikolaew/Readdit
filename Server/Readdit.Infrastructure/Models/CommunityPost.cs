@@ -23,6 +23,10 @@ public class CommunityPost : BaseDeletableEntity<string>
     [Url]
     [MaxLength(200)]
     public string? MediaUrl { get; set; }
+    
+    [Required]
+    [MaxLength(50)]
+    public string MediaPublicId { get; set; }
 
     [Required]
     [MaxLength(200)]
@@ -31,6 +35,9 @@ public class CommunityPost : BaseDeletableEntity<string>
     [Required]
     [MaxLength(1000)]
     public string Content { get; set; }
+
+    [Required]
+    public int VoteScore { get; set; }
 
     public ICollection<PostVote> Votes { get; set; } = new List<PostVote>();
 
