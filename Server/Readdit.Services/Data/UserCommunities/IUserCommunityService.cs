@@ -8,6 +8,8 @@ public interface IUserCommunityService
     
     Task<bool> LeaveCommunityAsync(string userId, string communityId);
 
+    Task<UserCommunity?> GetByUserAndCommunity(string userId, string communityId);
+
     Task<UserCommunity?> ApproveUserAsync(
         string approverId,
         string userId,

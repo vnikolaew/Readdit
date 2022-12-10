@@ -78,6 +78,12 @@ public class UserCommunityService : IUserCommunityService
         return true;
     }
 
+    public Task<UserCommunity?> GetByUserAndCommunity(string userId, string communityId)
+        => _userCommunities
+            .AllAsNoTracking()
+            .FirstOrDefaultAsync(uc => uc.UserId == userId
+                                       && uc.CommunityId == communityId);
+
     public async Task<UserCommunity?> ApproveUserAsync(
         string approverId,
         string userId,

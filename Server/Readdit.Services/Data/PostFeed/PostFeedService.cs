@@ -22,13 +22,12 @@ public class PostFeedService : IPostFeedService
 
     public async Task<IEnumerable<T>> GetMostRecentForUserAsync<T>(string userId)
     {
-        var communityIds = (await _userCommunities
-                .AllAsNoTracking()
-                .Where(uc => uc.UserId == userId
-                             && uc.Community.Type != CommunityType.Private)
-                .Select(uc => new { uc.CommunityId })
-                .ToListAsync())
-            .Select(c => c.CommunityId);
+        var communityIds = await _userCommunities
+            .AllAsNoTracking()
+            .Where(uc => uc.UserId == userId
+                         && uc.Community.Type != CommunityType.Private)
+            .Select(uc => uc.CommunityId)
+            .ToListAsync();
 
         var posts = await _posts
             .AllAsNoTracking()
@@ -45,13 +44,12 @@ public class PostFeedService : IPostFeedService
         string userId,
         TimeRange range)
     {
-        var communityIds = (await _userCommunities
-                .AllAsNoTracking()
-                .Where(uc => uc.UserId == userId
-                             && uc.Community.Type != CommunityType.Private)
-                .Select(uc => new { uc.CommunityId })
-                .ToListAsync())
-            .Select(c => c.CommunityId);
+        var communityIds = await _userCommunities
+            .AllAsNoTracking()
+            .Where(uc => uc.UserId == userId
+                         && uc.Community.Type != CommunityType.Private)
+            .Select(uc => uc.CommunityId)
+            .ToListAsync();
 
         var startDate = range.GetStartDate();
         var posts = await _posts
