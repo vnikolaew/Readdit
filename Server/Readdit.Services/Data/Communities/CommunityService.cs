@@ -186,11 +186,11 @@ public class CommunityService : ICommunityService
         return true;
     }
 
-    public Task<T?> GetCommunityDetailsByIdAsync<T>(string communityId)
+    public Task<T?> GetCommunityDetailsByIdAsync<T>(string communityId, string userId)
         => _communities
             .AllAsNoTracking()
             .Where(c => c.Id == communityId)
-            .To<T>()
+            .To<T>(new { currentUserId = userId })
             .FirstOrDefaultAsync();
 
     private async Task DeletePostsByCommunityId(string communityId, string userId)
