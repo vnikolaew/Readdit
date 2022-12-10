@@ -60,8 +60,7 @@ public static class DependencyInjection
             services.AddScoped(typeof(ISeeder), seederType);
         }
 
-        services.AddScoped<ReadditDbContextSeeder>();
-        return services;
+        return services.AddScoped<ReadditDbContextSeeder>();
     }
 
     public static async Task SeedAsync(this IServiceProvider serviceProvider)

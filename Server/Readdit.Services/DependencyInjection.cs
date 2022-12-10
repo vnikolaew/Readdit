@@ -6,12 +6,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Readdit.Services.Data.Authentication;
 using Readdit.Services.Data.Comments;
 using Readdit.Services.Data.CommentVotes;
-using Readdit.Services.Data.Common;
+using Readdit.Services.Data.Common.UnitOfWork;
 using Readdit.Services.Data.Communities;
 using Readdit.Services.Data.Countries;
 using Readdit.Services.Data.PostFeed;
 using Readdit.Services.Data.Posts;
 using Readdit.Services.Data.PostVotes;
+using Readdit.Services.Data.Scores;
 using Readdit.Services.Data.Search;
 using Readdit.Services.Data.Tags;
 using Readdit.Services.Data.UserCommunities;
@@ -43,6 +44,8 @@ public static class DependencyInjection
             .AddTransient<IPostFeedService, PostFeedService>()
             .AddTransient<IPostVotesService, PostVotesService>()
             .AddTransient<ITagsService, TagsService>()
+            .AddTransient<IPostScoresService, PostScoresService>()
+            .AddTransient<ICommentScoreService, CommentScoreService>()
             .AddTransient<ICommentVotesService, CommentVotesService>()
             .AddTransient<ICommentsService, CommentsService>()
             .AddTransient<ICountryService, CountryService>()
