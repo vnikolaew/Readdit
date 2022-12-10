@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Readdit.Infrastructure.Common.Models;
+using static Readdit.Common.GlobalConstants.Comment;
 
 namespace Readdit.Infrastructure.Models;
 
@@ -21,7 +22,8 @@ public class PostComment : BaseDeletableEntity<string>
     public ApplicationUser Author { get; set; }
 
     [Required]
-    [MaxLength(2000)]
+    [MinLength(ContentMinLength)]
+    [MaxLength(ContentMaxLength)]
     public string Content { get; set; }
     
     [Required]

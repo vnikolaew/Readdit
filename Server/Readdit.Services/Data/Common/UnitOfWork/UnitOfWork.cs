@@ -1,6 +1,6 @@
 ﻿using Readdit.Infrastructure.Data;
 
-namespace Readdit.Services.Data.Common;
+namespace Readdit.Services.Data.Common.UnitOfWork;
 
 public class UnitOfWork : IUnitOfWork
 {

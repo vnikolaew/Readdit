@@ -10,9 +10,7 @@ public class TagsService : ITagsService
     private readonly IRepository<Tag> _tags;
 
     public TagsService(IRepository<Tag> tags)
-    {
-        _tags = tags;
-    }
+        => _tags = tags;
 
     public async Task<IEnumerable<T>> GetAllAsync<T>()
         => await _tags
