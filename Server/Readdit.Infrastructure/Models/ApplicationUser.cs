@@ -1,26 +1,25 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 using Readdit.Infrastructure.Common.Models;
-using Readdit.Infrastructure.Models.Enums;
+using static Readdit.Common.GlobalConstants.User;
 
 namespace Readdit.Infrastructure.Models;
 
 public class ApplicationUser : IdentityUser, IAuditableEntity, IDeletableEntity
 {
     [Required]
-    [MaxLength(50)]
+    [MinLength(FirstNameMinLength)]
+    [MaxLength(FirstNameMaxLength)]
     public string FirstName { get; set; }
     
     [Required]
-    [MaxLength(50)]
+    [MinLength(LastNameMinLength)]
+    [MaxLength(LastNameMaxLength)]
     public string LastName { get; set; }
 
-    public Gender Gender { get; set; }
-
-    [Required]
-    public Country Country { get; set; }
-
     public UserProfile Profile { get; set; }
+    
+    public UserScore Score { get; set; }
 
     public DateTime CreatedOn { get; set; }
     

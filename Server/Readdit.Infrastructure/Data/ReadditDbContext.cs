@@ -36,6 +36,10 @@ public class ReadditDbContext : IdentityDbContext<ApplicationUser, ApplicationRo
     public DbSet<Tag> Tags { get; set; }
 
     public DbSet<CommentVote> CommentVotes { get; set; }
+    
+    public DbSet<UserCommunity> UserCommunities { get; set; }
+    
+    public DbSet<UserScore> UserScores { get; set; }
 
     public DbSet<Country> Countries { get; set; }
 

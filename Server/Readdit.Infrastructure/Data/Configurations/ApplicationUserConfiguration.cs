@@ -9,10 +9,6 @@ public class ApplicationUserConfiguration : IEntityTypeConfiguration<Application
     public void Configure(EntityTypeBuilder<ApplicationUser> builder)
     {
         builder
-            .HasOne(u => u.Country)
-            .WithMany();
-
-        builder
             .HasOne(u => u.Profile)
             .WithOne(p => p.User)
             .OnDelete(DeleteBehavior.Cascade);
