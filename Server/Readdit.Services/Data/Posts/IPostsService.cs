@@ -24,5 +24,5 @@ public interface IPostsService
 
     Task<T?> GetPostDetailsByIdAsync<T>(string postId);
 
-    Task<IEnumerable<T>> GetAllByCommunity<T>(string communityId);
+    Task<IEnumerable<T>> GetAllByCommunity<T>(string communityId, string userId);
 }

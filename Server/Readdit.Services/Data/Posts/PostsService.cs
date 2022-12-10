@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Readdit.Infrastructure.Common.Repositories;
 using Readdit.Infrastructure.Models;
 using Readdit.Infrastructure.Models.Enums;
+using Readdit.Services.Data.Scores;
 using Readdit.Services.Data.Tags;
 using Readdit.Services.External.Cloudinary;
 using Readdit.Services.Mapping;
@@ -15,6 +16,7 @@ public class PostsService : IPostsService
     private readonly IDeletableEntityRepository<CommunityPost> _posts;
     private readonly IDeletableEntityRepository<PostVote> _postVotes;
     private readonly IDeletableEntityRepository<PostComment> _postComments;
+    private readonly IDeletableEntityRepository<CommentVote> _commentVotes;
     private readonly IRepository<PostTag> _postTags;
     private readonly ITagsService _tagsService;
 
@@ -22,6 +24,8 @@ public class PostsService : IPostsService
     private readonly IRepository<Community> _communities;
     private readonly IRepository<UserCommunity> _userCommunities;
     private readonly ICloudinaryService _cloudinaryService;
+    private readonly IPostScoresService _postScores;
+    private readonly ICommentScoreService _commentScores;
 
     public PostsService(
         IDeletableEntityRepository<CommunityPost> posts,
@@ -32,7 +36,10 @@ public class PostsService : IPostsService
         IDeletableEntityRepository<PostVote> postVotes,
         IDeletableEntityRepository<PostComment> postComments,
         IRepository<PostTag> postTags,
-        ITagsService tagsService)
+        ITagsService tagsService,
+        IPostScoresService postScores,
+        IDeletableEntityRepository<CommentVote> commentVotes,
+        ICommentScoreService commentScores)
     {
         _posts = posts;
         _users = users;
@@ -43,6 +50,9 @@ public class PostsService : IPostsService
         _postComments = postComments;
         _postTags = postTags;
         _tagsService = tagsService;
+        _postScores = postScores;
+        _commentVotes = commentVotes;
+        _commentScores = commentScores;
     }
 
     public async Task<CommunityPost?> CreateAsync(
@@ -123,14 +133,16 @@ public class PostsService : IPostsService
             return false;
         }
 
-        await DeletePostVotes(postId);
-        await DeletePostComments(postId);
-        await DeletePostTags(postId);
-        await DeletePostMediaIfPresent(post);
+        var deleteTasks = new[]
+        {
+            DeletePostVotes(post),
+            DeletePostComments(post),
+            DeletePostTags(postId),
+            DeletePostMediaIfPresent(post)
+        };
         
-        await _cloudinaryService.DeleteFileAsync(post.MediaPublicId);
-
         _posts.Delete(post);
+        await Task.WhenAll(deleteTasks);
         await _posts.SaveChangesAsync();
         
         return true;
@@ -173,17 +185,19 @@ public class PostsService : IPostsService
         return post;
     }
 
-    private async Task DeletePostVotes(string postId)
+    private async Task DeletePostVotes(CommunityPost post)
     {
         var postVotes = await _postVotes
             .All()
-            .Where(pv => pv.PostId == postId)
+            .Where(pv => pv.PostId == post.Id)
             .ToListAsync();
 
         foreach (var postVote in postVotes)
         {
             _postVotes.Delete(postVote);
         }
+        
+        await _postScores.DecreaseForUserAsync(post.AuthorId, postVotes.Count);
     }
     
     private async Task DeletePostTags(string postId)
@@ -199,17 +213,26 @@ public class PostsService : IPostsService
         }
     }
     
-    private async Task DeletePostComments(string postId)
+    private async Task DeletePostComments(CommunityPost post)
     {
         var postComments = await _postComments
             .All()
-            .Where(pv => pv.PostId == postId)
+            .Include(c => c.Votes)
+            .Where(c => c.PostId == post.Id)
             .ToListAsync();
 
         foreach (var postComment in postComments)
         {
             _postComments.Delete(postComment);
+            foreach (var commentVote in postComment.Votes)
+            {
+                _commentVotes.Delete(commentVote);
+            }
+
+            await _commentScores.DecreaseForUserAsync(postComment.AuthorId, postComment.Votes.Count);
         }
+
+        await _postScores.DecreaseForUserAsync(post.AuthorId, postComments.Count);
     }
 
     public Task<T?> GetPostDetailsByIdAsync<T>(string postId)
@@ -219,13 +242,13 @@ public class PostsService : IPostsService
             .To<T>()
             .FirstOrDefaultAsync();
 
-    public async Task<IEnumerable<T>> GetAllByCommunity<T>(string communityId)
+    public async Task<IEnumerable<T>> GetAllByCommunity<T>(string communityId, string userId)
         => await _posts
             .AllAsNoTracking()
             .Where(p => p.CommunityId == communityId)
             .OrderByDescending(p => p.CreatedOn)
             .ThenByDescending(p => p.Votes.Count)
-            .To<T>()
+            .To<T>(new { currentUserId = userId })
             .ToListAsync();
 
     private async Task DeletePostMediaIfPresent(CommunityPost post)
