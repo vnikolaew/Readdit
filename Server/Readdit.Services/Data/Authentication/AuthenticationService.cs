@@ -50,7 +50,7 @@ public class AuthenticationService : IAuthenticationService
                 .Failure("Invalid credentials.");
         }
 
-        user.Country = (await _countryService.GetByUserAsync(user.Id))!;
+        (user.Profile ??= new()).Country = (await _countryService.GetByUserAsync(user.Id))!;
         var token = _jwtService.GenerateTokenForUser(user);
         return AuthenticationResultModel.Success(user.Id, token);
     }
@@ -75,14 +75,15 @@ public class AuthenticationService : IAuthenticationService
             UserName = registerModel.Username,
             FirstName = registerModel.FirstName,
             LastName = registerModel.LastName,
-            Country = country!,
             Email = registerModel.Email,
-            Gender = Enum.Parse<Gender>(registerModel.Gender),
             Profile = new UserProfile
             {
                 ProfilePictureUrl = uploadResult?.AbsoluteImageUrl ?? string.Empty,
-                ProfilePicturePublicId = uploadResult?.ImagePublidId ?? string.Empty
+                ProfilePicturePublicId = uploadResult?.ImagePublidId ?? string.Empty,
+                Country = country!,
+                Gender = Enum.Parse<Gender>(registerModel.Gender),
             },
+            Score = new UserScore()
         };
 
         var result = await _userManager.CreateAsync(user, registerModel.Password);
