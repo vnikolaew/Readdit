@@ -48,7 +48,7 @@ public class UsersService : IUsersService
 
         user.FirstName = firstName;
         user.LastName = lastName;
-        user.Gender = Enum.Parse<Gender>(gender);
+        user.Profile.Gender = Enum.Parse<Gender>(gender);
         user.Profile.AboutContent = aboutContent;
 
         var existingCountry = await _countries
@@ -56,7 +56,7 @@ public class UsersService : IUsersService
             .FirstOrDefaultAsync(c => c.Name == country);
         if (existingCountry is not null)
         {
-            user.Country = existingCountry;
+            user.Profile.Country = existingCountry;
         }
 
         if (profilePicture != null)

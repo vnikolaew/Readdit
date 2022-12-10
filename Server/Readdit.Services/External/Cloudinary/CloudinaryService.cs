@@ -8,7 +8,9 @@ public class CloudinaryService : ICloudinaryService
 {
     private readonly string[] _validTypes =
     {
-        "image/x-png", "image/gif", "image/jpeg", "image/jpg", "image/png", "image/gif", "image/svg", "image/webp"
+        "image/x-png", "image/gif", "image/jpeg", 
+        "image/jpg", "image/png", "image/gif",
+        "image/svg", "image/webp"
     };
 
     private static string Timestamp
@@ -29,7 +31,7 @@ public class CloudinaryService : ICloudinaryService
             return null!;
         }
 
-        var newFileName = AppendTimestamp(fileName);
+        var newFileName = AppendTimestampAndGuid(fileName);
 
         await using var memoryStream = new MemoryStream();
         fileStream.Position = 0L;
@@ -59,17 +61,24 @@ public class CloudinaryService : ICloudinaryService
 
     public async Task<bool> DeleteFileAsync(string filePublicId)
     {
-        var result = await _cloudinary.DestroyAsync(new DeletionParams(filePublicId));
-        return true;
+        try
+        {
+            await _cloudinary.DestroyAsync(new DeletionParams(filePublicId));
+            return true;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
     }
 
-    private string AppendTimestamp(string fileName)
+    private static string AppendTimestampAndGuid(string fileName)
     {
         var dotIndex = fileName.LastIndexOf('.');
-        return $"{fileName[..dotIndex]}_{Timestamp}";
+        return $"{fileName[..dotIndex]}_{Timestamp}_{Guid.NewGuid().ToString()}";
     }
 
-    private string GetFileExtension(string fileName)
+    private static string GetFileExtension(string fileName)
     {
         var dotIndex = fileName.LastIndexOf('.');
         return $"{fileName[(dotIndex + 1)..]}";

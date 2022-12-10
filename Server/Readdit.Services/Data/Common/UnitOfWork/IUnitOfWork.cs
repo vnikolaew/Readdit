@@ -1,4 +1,4 @@
-﻿namespace Readdit.Services.Data.Common;
+﻿namespace Readdit.Services.Data.Common.UnitOfWork;
 
 public interface IUnitOfWork
 {
