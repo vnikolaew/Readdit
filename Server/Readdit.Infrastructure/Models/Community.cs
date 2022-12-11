@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Readdit.Infrastructure.Common.Models;
 using Readdit.Infrastructure.Models.Enums;
+using static Readdit.Common.GlobalConstants.Community;
 
 namespace Readdit.Infrastructure.Models;
 
@@ -22,10 +23,12 @@ public class Community : BaseDeletableEntity<string>
     public CommunityType Type { get; set; }
 
     [Required]
-    [MinLength(3)]
-    [MaxLength(50)]
+    [MinLength(NameMinLength)]
+    [MaxLength(NameMaxLength)]
+    [RegularExpression(NameRegex)]
     public string Name { get; set; }
 
+    [MaxLength(DescriptionMaxLength)]
     public string Description { get; set; }
 
     [Required]
@@ -33,7 +36,7 @@ public class Community : BaseDeletableEntity<string>
     public string PictureUrl { get; set; }
     
     [Required]
-    [MaxLength(50)]
+    [MaxLength(PicturePublicIdMaxLength)]
     public string PicturePublicId { get; set; }
 
     public ICollection<CommunityTag> Tags { get; set; } = new List<CommunityTag>();

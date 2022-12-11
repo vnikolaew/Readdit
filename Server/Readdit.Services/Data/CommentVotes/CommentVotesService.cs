@@ -2,7 +2,8 @@
 using Readdit.Infrastructure.Common.Repositories;
 using Readdit.Infrastructure.Models;
 using Readdit.Infrastructure.Models.Enums;
-using Readdit.Services.Data.Common;
+using Readdit.Services.Data.Common.UnitOfWork;
+using Readdit.Services.Data.Scores;
 
 namespace Readdit.Services.Data.CommentVotes;
 
@@ -10,16 +11,19 @@ public class CommentVotesService : ICommentVotesService
 {
     private readonly IRepository<CommentVote> _commentVotes;
     private readonly IRepository<PostComment> _comments;
+    private readonly ICommentScoreService _commentScores;
     private readonly IUnitOfWork _unitOfWork;
 
     public CommentVotesService(
         IRepository<CommentVote> commentVotes,
         IRepository<PostComment> comments,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        ICommentScoreService commentScores)
     {
         _commentVotes = commentVotes;
         _comments = comments;
         _unitOfWork = unitOfWork;
+        _commentScores = commentScores;
     }
     
     public async Task<CommentVote?> UpVoteAsync(string userId, string commentId)
@@ -48,8 +52,10 @@ public class CommentVotesService : ICommentVotesService
 
             comment.VoteScore++;
             _commentVotes.Add(commentVote);
-            
+
+            await _commentScores.IncreaseForUserAsync(comment.AuthorId, 1);
             await _unitOfWork.SaveChangesAsync();
+            
             return commentVote;
         }
 
@@ -58,6 +64,7 @@ public class CommentVotesService : ICommentVotesService
         comment.VoteScore += 2;
         
         _commentVotes.Update(commentVote);
+        await _commentScores.IncreaseForUserAsync(comment.AuthorId, 2);
         await _unitOfWork.SaveChangesAsync();
 
         return commentVote;
@@ -81,9 +88,11 @@ public class CommentVotesService : ICommentVotesService
         }
 
         comment.VoteScore--;
+        
         _commentVotes.Delete(commentVote);
-
+        await _commentScores.DecreaseForUserAsync(comment.AuthorId, 1);
         await _unitOfWork.SaveChangesAsync();
+        
         return true;
     }
 
@@ -114,7 +123,9 @@ public class CommentVotesService : ICommentVotesService
             comment.VoteScore--;
             _commentVotes.Add(commentVote);
             
+            await _commentScores.DecreaseForUserAsync(comment.AuthorId, 1);
             await _unitOfWork.SaveChangesAsync();
+                
             return commentVote;
         }
 
@@ -123,6 +134,7 @@ public class CommentVotesService : ICommentVotesService
         comment.VoteScore -= 2;   
         
         _commentVotes.Update(commentVote);
+        await _commentScores.DecreaseForUserAsync(comment.AuthorId, 2);
         await _unitOfWork.SaveChangesAsync();
         
         return commentVote;
@@ -146,9 +158,11 @@ public class CommentVotesService : ICommentVotesService
         }
 
         comment.VoteScore++;
+        
         _commentVotes.Delete(commentVote);
-
+        await _commentScores.IncreaseForUserAsync(comment.AuthorId, 1);
         await _unitOfWork.SaveChangesAsync();
+        
         return true;
     }
 }

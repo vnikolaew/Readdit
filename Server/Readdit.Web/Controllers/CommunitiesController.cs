@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Net;
+using Microsoft.AspNetCore.Mvc;
 using Readdit.Infrastructure.Models;
 using Readdit.Services.Data.Communities;
 using Readdit.Services.Data.Communities.Models;
@@ -14,6 +15,8 @@ public class CommunitiesController : ApiController
         => _communityService = communityService;
 
     [HttpPost]
+    [ProducesResponseType((int) HttpStatusCode.Created, Type = typeof(Community))]
+    [ProducesResponseType((int) HttpStatusCode.BadRequest)]
     public async Task<IActionResult> Create([FromForm] CreateCommunityInputModel model)
     {
         var community = await _communityService.CreateAsync(
@@ -32,14 +35,19 @@ public class CommunitiesController : ApiController
     [HttpGet]
     [Route("{communityId}")]
     [ResponseCache(Duration = 60, Location = ResponseCacheLocation.Any)]
+    [ProducesResponseType((int) HttpStatusCode.OK, Type = typeof(CommunityDetailsModel))]
+    [ProducesResponseType((int) HttpStatusCode.NotFound)]
     public async Task<IActionResult> Details([FromRoute]string communityId)
     {
-        var post = await _communityService.GetCommunityDetailsByIdAsync<CommunityPost>(communityId);
-        return post.OkOrNotFound();
+        var community = await _communityService
+            .GetCommunityDetailsByIdAsync<CommunityDetailsModel>(communityId, User.GetId()!);
+        return community.OkOrNotFound();
     }
     
     [HttpPut]
     [Route("{communityId}")]
+    [ProducesResponseType((int) HttpStatusCode.Accepted, Type = typeof(Community))]
+    [ProducesResponseType((int) HttpStatusCode.BadRequest)]
     public async Task<IActionResult> Update(
         [FromForm] UpdateCommunityInputModel model,
         string communityId)
@@ -64,6 +72,8 @@ public class CommunitiesController : ApiController
 
     [HttpDelete]
     [Route("{communityId}")]
+    [ProducesResponseType((int) HttpStatusCode.OK)]
+    [ProducesResponseType((int) HttpStatusCode.BadRequest)]
     public async Task<IActionResult> Delete([FromRoute] string communityId)
     {
         var success = await _communityService

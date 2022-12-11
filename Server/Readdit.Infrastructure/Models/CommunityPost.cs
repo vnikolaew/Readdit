@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Readdit.Infrastructure.Common.Models;
+using static Readdit.Common.GlobalConstants.Post;
 
 namespace Readdit.Infrastructure.Models;
 
@@ -21,19 +22,19 @@ public class CommunityPost : BaseDeletableEntity<string>
     public Community Community { get; set; }
 
     [Url]
-    [MaxLength(200)]
     public string? MediaUrl { get; set; }
     
     [Required]
-    [MaxLength(50)]
     public string MediaPublicId { get; set; }
 
     [Required]
-    [MaxLength(200)]
+    [MinLength(TitleMinLength)]
+    [MaxLength(TitleMaxLength)]
     public string Title { get; set; }
     
     [Required]
-    [MaxLength(1000)]
+    [MinLength(ContentMinLength)]
+    [MaxLength(ContentMaxLength)]
     public string Content { get; set; }
 
     [Required]
