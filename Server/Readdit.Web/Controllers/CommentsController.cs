@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Net;
+using Microsoft.AspNetCore.Mvc;
 using Readdit.Services.Data.Comments;
 using Readdit.Services.Data.Comments.Models;
 using Readdit.Web.Infrastructure.Extensions;
@@ -13,6 +14,8 @@ public class CommentsController : ApiController
         => _commentsService = commentsService;
 
     [HttpPost]
+    [ProducesResponseType((int) HttpStatusCode.OK)]
+    [ProducesResponseType((int) HttpStatusCode.BadRequest)]
     public async Task<IActionResult> Create([FromForm] CreateCommentInputModel commentInputModel)
     {
         var comment = await _commentsService.CreateAsync(
@@ -25,6 +28,8 @@ public class CommentsController : ApiController
     
     [HttpPut]
     [Route("{commentId}")]
+    [ProducesResponseType((int) HttpStatusCode.BadRequest)]
+    [ProducesResponseType((int) HttpStatusCode.Accepted)]
     public async Task<IActionResult> Update(
         [FromRoute] string commentId,
         UpdateCommentInputModel commentInputModel)
@@ -46,6 +51,8 @@ public class CommentsController : ApiController
 
     [HttpDelete]
     [Route("{commentId}")]
+    [ProducesResponseType((int) HttpStatusCode.BadRequest)]
+    [ProducesResponseType((int) HttpStatusCode.OK)]
     public async Task<IActionResult> Delete([FromRoute] string commentId)
     {
         var success = await _commentsService

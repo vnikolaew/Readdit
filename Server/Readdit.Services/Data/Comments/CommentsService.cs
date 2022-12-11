@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Readdit.Infrastructure.Common.Repositories;
 using Readdit.Infrastructure.Models;
+using Readdit.Services.Data.Scores;
 
 namespace Readdit.Services.Data.Comments;
 
@@ -10,17 +11,26 @@ public class CommentsService : ICommentsService
     private readonly IRepository<ApplicationUser> _users;
     private readonly IRepository<CommunityPost> _posts;
     private readonly IRepository<UserCommunity> _userCommunities;
+    private readonly IDeletableEntityRepository<CommentVote> _commentVotes;
+    private readonly IPostScoresService _postScores;
+    private readonly ICommentScoreService _commentScores;
 
     public CommentsService(
         IDeletableEntityRepository<PostComment> postComments,
         IRepository<ApplicationUser> users,
         IRepository<CommunityPost> posts,
-        IRepository<UserCommunity> userCommunities)
+        IRepository<UserCommunity> userCommunities,
+        IPostScoresService postScores,
+        ICommentScoreService commentScores,
+        IDeletableEntityRepository<CommentVote> commentVotes)
     {
         _postComments = postComments;
         _users = users;
         _posts = posts;
         _userCommunities = userCommunities;
+        _postScores = postScores;
+        _commentScores = commentScores;
+        _commentVotes = commentVotes;
     }
 
     public async Task<PostComment?> CreateAsync(
@@ -58,6 +68,7 @@ public class CommentsService : ICommentsService
         };
         
         _postComments.Add(comment);
+        await _postScores.IncreaseForUserAsync(post.AuthorId, 1);
         await _postComments.SaveChangesAsync();
         
         return comment;
@@ -86,14 +97,29 @@ public class CommentsService : ICommentsService
     {
         var existingComment = await _postComments
             .All()
-            .FirstOrDefaultAsync(c => c.AuthorId == authorId
-                                      && c.Id == commentId);
+            .Where(c => c.AuthorId == authorId
+                                      && c.Id == commentId)
+            .Select(c => new
+            {
+                Comment = c,
+                PostAuthorId = c.Post.AuthorId,
+                CommentVotes = c.Votes
+            })
+            .FirstOrDefaultAsync();
+        
         if (existingComment is null)
         {
             return false;
         }
+
+        foreach (var commentVote in existingComment.CommentVotes)
+        {
+            _commentVotes.Delete(commentVote);
+        }
         
-        _postComments.Delete(existingComment);
+        _postComments.Delete(existingComment.Comment);
+        await _postScores.DecreaseForUserAsync(existingComment.PostAuthorId, 1);
+        await _commentScores.DecreaseForUserAsync(existingComment.Comment.AuthorId, existingComment.Comment.VoteScore);
         await _postComments.SaveChangesAsync();
         
         return true;

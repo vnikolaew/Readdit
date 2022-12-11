@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Net;
+using Microsoft.AspNetCore.Mvc;
+using Readdit.Infrastructure.Models;
 using Readdit.Services.Data.CommentVotes;
 using Readdit.Web.Infrastructure.Extensions;
 
@@ -13,6 +15,8 @@ public class CommentVotesController : ApiController
         
     [HttpPost]
     [Route("up/{commentId}")]
+    [ProducesResponseType((int) HttpStatusCode.OK, Type = typeof(CommentVote))]
+    [ProducesResponseType((int) HttpStatusCode.BadRequest)]
     public async Task<IActionResult> UpVote([FromRoute] string commentId)
     {
         var commentVote = await _commentVotesService.UpVoteAsync(
@@ -23,6 +27,8 @@ public class CommentVotesController : ApiController
         
     [HttpPost]
     [Route("down/{commentId}")]
+    [ProducesResponseType((int) HttpStatusCode.OK, Type = typeof(CommentVote))]
+    [ProducesResponseType((int) HttpStatusCode.BadRequest)]
     public async Task<IActionResult> DownVote([FromRoute] string commentId)
     {
         var commentVote = await _commentVotesService.DownVoteAsync(
@@ -33,6 +39,8 @@ public class CommentVotesController : ApiController
     
     [HttpDelete]
     [Route("up/{commentId}")]
+    [ProducesResponseType((int) HttpStatusCode.OK)]
+    [ProducesResponseType((int) HttpStatusCode.BadRequest)]
     public async Task<IActionResult> DeleteUpVote([FromRoute] string commentId)
     {
         var success = await _commentVotesService.RemoveUpVoteAsync(
@@ -43,6 +51,8 @@ public class CommentVotesController : ApiController
 
     [HttpDelete]
     [Route("down/{commentId}")]
+    [ProducesResponseType((int) HttpStatusCode.OK)]
+    [ProducesResponseType((int) HttpStatusCode.BadRequest)]
     public async Task<IActionResult> DeleteDownVote([FromRoute] string commentId)
     {
         var success = await _commentVotesService.RemoveDownVoteAsync(
