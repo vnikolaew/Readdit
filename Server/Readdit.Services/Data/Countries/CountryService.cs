@@ -25,12 +25,14 @@ public class CountryService : ICountryService
             .ToListAsync();
 
     public async Task<Country?> GetByNameAsync(string name)
-        => await _countries.All().FirstOrDefaultAsync(c => c.Name == name);
+        => await _countries
+            .AllAsNoTracking()
+            .FirstOrDefaultAsync(c => c.Name == name);
 
     public async Task<Country?> GetByUserAsync(string userId)
-        => (await _users
+        => await _users
             .AllAsNoTracking()
             .Where(u => u.Id == userId)
-            .Select(u => new { u.Country })
-            .FirstOrDefaultAsync())?.Country;
+            .Select(u => u.Profile.Country)
+            .FirstOrDefaultAsync();
 }
