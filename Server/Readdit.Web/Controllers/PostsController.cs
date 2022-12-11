@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Net;
+using Microsoft.AspNetCore.Mvc;
 using Readdit.Infrastructure.Models;
 using Readdit.Services.Data.Posts;
 using Readdit.Services.Data.Posts.Models;
@@ -14,6 +15,8 @@ public class PostsController : ApiController
         => _postsService = postsService;
 
     [HttpPost]
+    [ProducesResponseType((int) HttpStatusCode.Created, Type = typeof(CommunityPost))]
+    [ProducesResponseType((int) HttpStatusCode.BadRequest)]
     public async Task<IActionResult> Create([FromForm] CreatePostInputModel model)
     {
         var post = await _postsService.CreateAsync(
@@ -32,14 +35,18 @@ public class PostsController : ApiController
     [HttpGet]
     [Route("{postId}")]
     [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
+    [ProducesResponseType((int) HttpStatusCode.OK, Type = typeof(PostDetailsModel))]
+    [ProducesResponseType((int) HttpStatusCode.NotFound)]
     public async Task<IActionResult> Details([FromRoute]string postId)
     {
-        var post = await _postsService.GetPostDetailsByIdAsync<CommunityPost>(postId);
+        var post = await _postsService.GetPostDetailsByIdAsync<PostDetailsModel>(postId);
         return post.OkOrNotFound();
     }
 
     [HttpDelete]
     [Route("{postId}")]
+    [ProducesResponseType((int) HttpStatusCode.BadRequest)]
+    [ProducesResponseType((int) HttpStatusCode.NoContent)]
     public async Task<IActionResult> Delete([FromRoute] string postId)
     {
         var success = await _postsService.DeleteAsync(User.GetId()!, postId);
@@ -47,7 +54,12 @@ public class PostsController : ApiController
     }
     
     [HttpPut]
-    public async Task<IActionResult> Update([FromForm] UpdatePostInputModel model)
+    [Route("{postId}")]
+    [ProducesResponseType((int) HttpStatusCode.OK, Type = typeof(CommunityPost))]
+    [ProducesResponseType((int) HttpStatusCode.BadRequest)]
+    public async Task<IActionResult> Update(
+        [FromForm] UpdatePostInputModel model,
+        string postId)
     {
         var post = await _postsService.UpdateAsync(
             model.PostId,
@@ -56,15 +68,19 @@ public class PostsController : ApiController
             model.Content,
             model.Media);
         
-        return post is null ? BadRequest() : Ok(post);
+        return post is null
+            ? BadRequest()
+            : AcceptedAtAction(nameof(Details), new { postId = post.Id }, post);
     }
 
     [HttpGet]
     [Route("community/{communityId}")]
-    public async Task<IActionResult> AllByCommunity([FromRoute] string communityId)
+    [ProducesResponseType((int) HttpStatusCode.OK, Type = typeof(IEnumerable<CommunityPostModel>))]
+    public async Task<IActionResult> AllByCommunity(
+        [FromRoute] string communityId)
     {
         var postsByCommunity = await _postsService
-            .GetAllByCommunity<CommunityPostServiceModel>(communityId);
+            .GetAllByCommunity<CommunityPostModel>(communityId, User.GetId()!);
         return Ok(postsByCommunity);
     }
 }

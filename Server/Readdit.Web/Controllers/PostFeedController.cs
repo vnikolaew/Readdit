@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Net;
+using Microsoft.AspNetCore.Mvc;
 using Readdit.Services.Data.PostFeed;
 using Readdit.Services.Data.PostFeed.Enums;
 using Readdit.Services.Data.PostFeed.Models;
@@ -15,6 +16,7 @@ public class PostFeedController : ApiController
 
     [HttpGet]
     [Route("new")]
+    [ProducesResponseType((int) HttpStatusCode.OK, Type = typeof(IEnumerable<FeedCommunityPostModel>))]
     public async Task<IActionResult> MostRecentPostsAsync()
     {
         var posts = await _postFeedService
@@ -24,6 +26,7 @@ public class PostFeedController : ApiController
     
     [HttpGet]
     [Route("top")]
+    [ProducesResponseType((int) HttpStatusCode.OK, Type = typeof(IEnumerable<FeedCommunityPostModel>))]
     public async Task<IActionResult> BesVotedPostsAsync([FromQuery] TimeRange range)
     {
         var posts = await _postFeedService

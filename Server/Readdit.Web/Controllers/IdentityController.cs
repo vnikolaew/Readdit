@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Net;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Readdit.Services.Data.Authentication;
 using Readdit.Services.Data.Authentication.Models;
@@ -16,6 +17,8 @@ public class IdentityController : ApiController
     [HttpPost]
     [Route("register")]
     [AllowAnonymous]
+    [ProducesResponseType((int) HttpStatusCode.OK, Type = typeof(AuthenticationResultSuccessModel))]
+    [ProducesResponseType((int) HttpStatusCode.BadRequest, Type = typeof(AuthenticationResultErrorModel))]
     public async Task<IActionResult> RegisterAsync([FromForm] RegisterInputModel registerInputModel)
     {
         var result = await _authenticationService.RegisterAsync(registerInputModel);
@@ -25,7 +28,9 @@ public class IdentityController : ApiController
     [HttpPost]
     [Route("login")]
     [AllowAnonymous]
-    public async Task<IActionResult> LoginAsync([FromForm] LoginInputModel loginInputModel)
+    [ProducesResponseType((int) HttpStatusCode.OK, Type = typeof(AuthenticationResultSuccessModel))]
+    [ProducesResponseType((int) HttpStatusCode.BadRequest, Type = typeof(AuthenticationResultErrorModel))]
+    public async Task<IActionResult> LoginAsync(LoginInputModel loginInputModel)
     {
         var result = await _authenticationService.PasswordLoginAsync(loginInputModel);
         return result.ToActionResult();
@@ -33,6 +38,8 @@ public class IdentityController : ApiController
 
     [HttpPost]
     [Route("confirmEmail")]
+    [ProducesResponseType((int) HttpStatusCode.OK)]
+    [ProducesResponseType((int) HttpStatusCode.BadRequest)]
     public async Task<IActionResult> ConfirmEmailAsync(
         [FromQuery] string userId, [FromQuery] string token)
     {

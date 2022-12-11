@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Net;
+using Microsoft.AspNetCore.Mvc;
+using Readdit.Infrastructure.Models;
 using Readdit.Services.Data.Users;
 using Readdit.Services.Data.Users.Models;
 using Readdit.Web.Infrastructure.Extensions;
@@ -15,13 +17,17 @@ public class UsersController : ApiController
     [HttpGet]
     [Route("{userId}")]
     [ResponseCache(Duration = 60 * 10, Location = ResponseCacheLocation.Any)]
+    [ProducesResponseType((int) HttpStatusCode.OK, Type = typeof(UserDetailsModel))]
+    [ProducesResponseType((int) HttpStatusCode.NotFound)]
     public async Task<IActionResult> Details(string userId)
     {
-        var userDetails = await _usersService.GetUserInfoAsync<UserDetailsServiceModel>(userId);
+        var userDetails = await _usersService.GetUserInfoAsync<UserDetailsModel>(userId);
         return userDetails.OkOrNotFound();
     }
     
     [HttpPut]
+    [ProducesResponseType((int) HttpStatusCode.Accepted, Type = typeof(ApplicationUser))]
+    [ProducesResponseType((int) HttpStatusCode.BadRequest)]
     public async Task<IActionResult> UpdateProfile(
         [FromForm] UpdateUserProfileModel model) 
     {
@@ -36,6 +42,6 @@ public class UsersController : ApiController
 
         return user is null
             ? BadRequest()
-            : AcceptedAtAction(nameof(Details), new { userId = user.Id }, user);
+            : AcceptedAtAction(nameof(Details), new { userId = user.Id }, null);
     }
 }

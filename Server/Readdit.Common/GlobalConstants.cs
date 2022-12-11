@@ -1,6 +1,4 @@
-﻿using System.Text.RegularExpressions;
-
-namespace Readdit.Common;
+﻿namespace Readdit.Common;
 
 public static class GlobalConstants
 {
