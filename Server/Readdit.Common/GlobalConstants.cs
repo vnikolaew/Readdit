@@ -4,9 +4,21 @@ public static class GlobalConstants
 {
     public const string AdministratorRoleName = "Admin";
     
+    public const string AdminArea = "Administration";
+
+    public const string AdminEmail = "admin@admin.com";
+
+    public const string AdminName = "Admin";
+
+    public const string AdminPicture = "https://res.cloudinary.com/vnikolaev2525/image/upload/v1670849979/admin_gg7y5e.png";
+    
+    public const string AdminPicturePublicId = "admin_gg7y5e";
+    
+    public const string SystemPasswordHashed = "AQAAAAEAACcQAAAAECrjCD23cQQ28Tyci+UMuaGrFMDUb/trG4E0RbJa4McRVfWFJ6c5UG4NpbXDB6K5rQ==";
+
     public const string RegularUserRoleName = "RegularUser";
 
-    public const string ReadditEmail = "vikinik01@abv.bg";
+    public const string ReadditEmail = "softuni-readdit@abv.bg";
     
     public const string ApplicationName = "Readdit";
     

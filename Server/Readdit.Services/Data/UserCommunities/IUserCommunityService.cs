@@ -14,4 +14,6 @@ public interface IUserCommunityService
         string approverId,
         string userId,
         string communityId);
+
+    Task<IEnumerable<T>> GetAllByUser<T>(string userId);
 }
