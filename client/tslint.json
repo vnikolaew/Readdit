@@ -1,0 +1,13 @@
+{
+  "extends": "tslint:latest",
+  "defaultSeverity": "warning",
+  "rules": {
+    "max-classes-per-file": false,
+    "no-this-assignment": false,
+    "no-empty": false,
+    "no-empty-interface": false,
+    "no-shadowed-variable": false,
+    "no-console": false,
+    "no-unused-expression": false
+  }
+}
