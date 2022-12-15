@@ -1,21 +1,14 @@
-using Newtonsoft.Json;
 using Readdit.Infrastructure;
 using Readdit.Services;
+using Readdit.Web.Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
+var configuration = builder.Configuration;
 
 builder.Services
-    .AddInfrastructure(builder.Configuration)
-    .AddApplication(builder.Configuration)
-    .AddResponseCaching()
-    .AddControllers()
-    .AddNewtonsoftJson(options =>
-        options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
-
-builder.Services
-    .AddEndpointsApiExplorer()
-    .AddSwaggerGen()
-    .AddCors();
+    .AddInfrastructure(configuration)
+    .AddApplication(configuration)
+    .AddWebComponents();
 
 var app = builder.Build();
 
@@ -28,15 +21,15 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection()
     .UseCors(options =>
         options
-        .WithOrigins("http://localhost:3000")
-        .AllowAnyHeader()
-        .AllowAnyMethod()
-        .AllowCredentials())
+            .WithOrigins(configuration["CorsOrigins"].Split(";"))
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials())
     .UseAuthentication()
     .UseAuthorization()
     .UseResponseCaching();
 
 app.MapControllers();
-
 app.Services.SeedAsync().GetAwaiter().GetResult();
+
 app.Run();
