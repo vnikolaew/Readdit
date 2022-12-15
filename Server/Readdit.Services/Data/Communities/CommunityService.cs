@@ -186,10 +186,10 @@ public class CommunityService : ICommunityService
         return true;
     }
 
-    public Task<T?> GetCommunityDetailsByIdAsync<T>(string communityId, string userId)
+    public Task<T?> GetCommunityDetailsByIdOrNameAsync<T>(string communityIdOrName, string userId)
         => _communities
             .AllAsNoTracking()
-            .Where(c => c.Id == communityId)
+            .Where(c => c.Id == communityIdOrName || c.Name == communityIdOrName)
             .To<T>(new { currentUserId = userId })
             .FirstOrDefaultAsync();
 

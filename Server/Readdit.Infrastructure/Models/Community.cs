@@ -33,7 +33,7 @@ public class Community : BaseDeletableEntity<string>
 
     [Required]
     [Url]
-    public string PictureUrl { get; set; }
+    public string PictureUrl { get; set; } 
     
     [Required]
     [MaxLength(PicturePublicIdMaxLength)]

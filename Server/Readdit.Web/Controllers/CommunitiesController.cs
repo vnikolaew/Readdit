@@ -33,14 +33,14 @@ public class CommunitiesController : ApiController
     }
     
     [HttpGet]
-    [Route("{communityId}")]
+    [Route("{communityIdOrName}")]
     [ResponseCache(Duration = 60, Location = ResponseCacheLocation.Any)]
     [ProducesResponseType((int) HttpStatusCode.OK, Type = typeof(CommunityDetailsModel))]
     [ProducesResponseType((int) HttpStatusCode.NotFound)]
-    public async Task<IActionResult> Details([FromRoute]string communityId)
+    public async Task<IActionResult> Details([FromRoute]string communityIdOrName)
     {
         var community = await _communityService
-            .GetCommunityDetailsByIdAsync<CommunityDetailsModel>(communityId, User.GetId()!);
+            .GetCommunityDetailsByIdOrNameAsync<CommunityDetailsModel>(communityIdOrName, User.GetId()!);
         return community.OkOrNotFound();
     }
     

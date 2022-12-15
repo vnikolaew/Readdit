@@ -50,8 +50,10 @@ public class AuthenticationService : IAuthenticationService
                 .Failure("Invalid credentials.");
         }
 
-        (user.Profile ??= new()).Country = (await _countryService.GetByUserAsync(user.Id))!;
-        var token = _jwtService.GenerateTokenForUser(user);
+        var userRoles = await _userManager.GetRolesAsync(user);
+        
+        (user.Profile ??= new UserProfile()).Country = (await _countryService.GetByUserAsync(user.Id))!;
+        var token = _jwtService.GenerateTokenForUser(user, userRoles);
         return AuthenticationResultModel.Success(user.Id, token);
     }
 
@@ -92,6 +94,8 @@ public class AuthenticationService : IAuthenticationService
             return AuthenticationResultModel
                 .Failure(result.Errors.Select(e => e.Description));
         }
+
+        await _userManager.AddToRoleAsync(user, GlobalConstants.RegularUserRoleName);
         
         var emailConfirmationToken = await _userManager
             .GenerateEmailConfirmationTokenAsync(user);
@@ -109,7 +113,7 @@ public class AuthenticationService : IAuthenticationService
                     emailConfirmationToken,
                     user.Id)));
             
-        var token = _jwtService.GenerateTokenForUser(user);
+        var token = _jwtService.GenerateTokenForUser(user, new []{ GlobalConstants.RegularUserRoleName });
         return AuthenticationResultModel.Success(user.Id, token);
     }
 
