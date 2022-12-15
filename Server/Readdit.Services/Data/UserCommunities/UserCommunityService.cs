@@ -2,6 +2,7 @@
 using Readdit.Infrastructure.Common.Repositories;
 using Readdit.Infrastructure.Models;
 using Readdit.Infrastructure.Models.Enums;
+using Readdit.Services.Mapping;
 
 namespace Readdit.Services.Data.UserCommunities;
 
@@ -115,4 +116,11 @@ public class UserCommunityService : IUserCommunityService
         await _userCommunities.SaveChangesAsync();
         return existingUserCommunity;
     }
+
+    public async Task<IEnumerable<T>> GetAllByUser<T>(string userId)
+        => await _communities
+            .AllAsNoTracking()
+            .Where(c => c.Members.Any(m => m.UserId == userId))
+            .To<T>()
+            .ToListAsync();
 }

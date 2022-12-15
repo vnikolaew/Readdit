@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Readdit.Infrastructure.Models;
 using Readdit.Services.Data.UserCommunities;
+using Readdit.Services.Data.UserCommunities.Models;
 using Readdit.Web.Infrastructure.Extensions;
 
 namespace Readdit.Web.Controllers;
@@ -48,7 +49,7 @@ public class UserCommunitiesController : ApiController
     }
     
     [HttpGet]
-    [Route("{communityId}")]
+    [Route("relationship/{communityId}")]
     [ProducesResponseType((int) HttpStatusCode.OK)]
     [ProducesResponseType((int) HttpStatusCode.NotFound)]
     public async Task<IActionResult> GetRelationship(
@@ -60,5 +61,16 @@ public class UserCommunitiesController : ApiController
         return userCommunity is null
             ? NotFound()
             : Ok(new { userCommunity.Status, userCommunity.CreatedOn });
+    }
+    
+    [HttpGet]
+    [Route("{userId}")]
+    [ProducesResponseType((int) HttpStatusCode.OK, Type = typeof(IEnumerable<UserCommunityModel>))]
+    public async Task<IActionResult> GetByUser([FromRoute] string userId)
+    {
+        var userCommunities = await _userCommunities
+            .GetAllByUser<UserCommunityModel>(userId);
+
+        return Ok(userCommunities);
     }
 }
