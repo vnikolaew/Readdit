@@ -26,8 +26,8 @@ public class SearchService : ISearchService
     {
         var communities = await _communities
             .AllAsNoTracking()
-            .Where(c => EF.Functions.Like(c.Name, query) ||
-                        EF.Functions.Like(c.Description, query))
+            .Where(c => EF.Functions.Like(c.Name, $"%{query}%") ||
+                        EF.Functions.Like(c.Description, $"%{query}%"))
             .OrderByDescending(c => c.Members.Count)
             .To<T>()
             .ToListAsync();
@@ -40,7 +40,7 @@ public class SearchService : ISearchService
         var startDate = range.GetStartDate();
         var posts = await _posts
             .AllAsNoTracking()
-            .Where(p => EF.Functions.Like(p.Title, query)
+            .Where(p => EF.Functions.Like(p.Title, $"%{query}%")
                         && p.CreatedOn > startDate)
             .OrderByDescending(p => p.CreatedOn)
             .To<T>()
@@ -53,7 +53,7 @@ public class SearchService : ISearchService
     {
         var users = await _users
             .AllAsNoTracking()
-            .Where(u => EF.Functions.Like(u.UserName, query))
+            .Where(u => EF.Functions.Like(u.UserName, $"%{query}%"))
             .OrderBy(u => u.UserName)
             .To<T>()
             .ToListAsync();

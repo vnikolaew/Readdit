@@ -1,14 +1,18 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
+using static Readdit.Common.GlobalConstants.UserProfile;
+using static Readdit.Common.GlobalConstants.User;
 
 namespace Readdit.Services.Data.Users.Models;
 
 public class UpdateUserProfileModel
 {
-    [MaxLength(50)]
+    [MinLength(FirstNameMinLength)]
+    [MaxLength(FirstNameMaxLength)]
     public string FirstName { get; set; }
     
-    [MaxLength(50)]
+    [MinLength(LastNameMinLength)]
+    [MaxLength(LastNameMaxLength)]
     public string LastName { get; set; }
     
     public string Gender { get; set; }
@@ -17,7 +21,7 @@ public class UpdateUserProfileModel
     public string Country { get; set; }
     
     [Required]
-    [MaxLength(200)]
+    [MaxLength(AboutContentMaxLength)]
     public string AboutContent { get; set; }
     
     public IFormFile? Picture { get; set; }
