@@ -1,0 +1,4070 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Readdit",
+    "version": "v1"
+  },
+  "paths": {
+    "/api/Comments": {
+      "post": {
+        "tags": [
+          "Comments"
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "Content",
+                  "PostId"
+                ],
+                "type": "object",
+                "properties": {
+                  "PostId": {
+                    "title": "String",
+                    "type": "string"
+                  },
+                  "Content": {
+                    "title": "String",
+                    "maxLength": 1000,
+                    "type": "string"
+                  }
+                }
+              },
+              "encoding": {
+                "PostId": {
+                  "style": "form"
+                },
+                "Content": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Comments/{commentId}": {
+      "put": {
+        "tags": [
+          "Comments"
+        ],
+        "parameters": [
+          {
+            "name": "commentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "title": "String",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCommentInputModel"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCommentInputModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCommentInputModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCommentInputModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "Accepted"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Comments"
+        ],
+        "parameters": [
+          {
+            "name": "commentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "title": "String",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/CommentVotes/up/{commentId}": {
+      "post": {
+        "tags": [
+          "CommentVotes"
+        ],
+        "parameters": [
+          {
+            "name": "commentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "title": "String",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommentVote"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommentVote"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommentVote"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "CommentVotes"
+        ],
+        "parameters": [
+          {
+            "name": "commentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "title": "String",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/CommentVotes/down/{commentId}": {
+      "post": {
+        "tags": [
+          "CommentVotes"
+        ],
+        "parameters": [
+          {
+            "name": "commentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "title": "String",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommentVote"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommentVote"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommentVote"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "CommentVotes"
+        ],
+        "parameters": [
+          {
+            "name": "commentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "title": "String",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Communities": {
+      "post": {
+        "tags": [
+          "Communities"
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "Description",
+                  "Name",
+                  "Type"
+                ],
+                "type": "object",
+                "properties": {
+                  "Name": {
+                    "title": "String",
+                    "maxLength": 50,
+                    "minLength": 3,
+                    "pattern": "^[A-Za-z][A-Za-z0-9_]*$",
+                    "type": "string"
+                  },
+                  "Description": {
+                    "title": "String",
+                    "maxLength": 500,
+                    "type": "string"
+                  },
+                  "Picture": {
+                    "title": "IFormFile",
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "Tags": {
+                    "title": "IEnumerable`1",
+                    "type": "array",
+                    "items": {
+                      "title": "String",
+                      "type": "string"
+                    }
+                  },
+                  "Type": {
+                    "$ref": "#/components/schemas/CommunityType"
+                  }
+                }
+              },
+              "encoding": {
+                "Name": {
+                  "style": "form"
+                },
+                "Description": {
+                  "style": "form"
+                },
+                "Picture": {
+                  "style": "form"
+                },
+                "Tags": {
+                  "style": "form"
+                },
+                "Type": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Community"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Community"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Community"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Communities/{communityIdOrName}": {
+      "get": {
+        "tags": [
+          "Communities"
+        ],
+        "parameters": [
+          {
+            "name": "communityIdOrName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "title": "String",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommunityDetailsModel"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommunityDetailsModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommunityDetailsModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Communities/{communityId}": {
+      "put": {
+        "tags": [
+          "Communities"
+        ],
+        "parameters": [
+          {
+            "name": "communityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "title": "String",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "CommunityId",
+                  "Description",
+                  "Type"
+                ],
+                "type": "object",
+                "properties": {
+                  "CommunityId": {
+                    "title": "String",
+                    "type": "string"
+                  },
+                  "Description": {
+                    "title": "String",
+                    "maxLength": 500,
+                    "type": "string"
+                  },
+                  "Picture": {
+                    "title": "IFormFile",
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "Tags": {
+                    "title": "IEnumerable`1",
+                    "type": "array",
+                    "items": {
+                      "title": "String",
+                      "type": "string"
+                    }
+                  },
+                  "Type": {
+                    "$ref": "#/components/schemas/CommunityType"
+                  }
+                }
+              },
+              "encoding": {
+                "CommunityId": {
+                  "style": "form"
+                },
+                "Description": {
+                  "style": "form"
+                },
+                "Picture": {
+                  "style": "form"
+                },
+                "Tags": {
+                  "style": "form"
+                },
+                "Type": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Accepted",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Community"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Community"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Community"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Communities"
+        ],
+        "parameters": [
+          {
+            "name": "communityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "title": "String",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Countries": {
+      "get": {
+        "tags": [
+          "Countries"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "title": "IEnumerable`1",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CountryModel"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "title": "IEnumerable`1",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CountryModel"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "title": "IEnumerable`1",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CountryModel"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Identity/register": {
+      "post": {
+        "tags": [
+          "Identity"
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "Country",
+                  "Email",
+                  "EmailConfirmationUrl",
+                  "FirstName",
+                  "Gender",
+                  "LastName",
+                  "Password",
+                  "Username"
+                ],
+                "type": "object",
+                "properties": {
+                  "FirstName": {
+                    "title": "String",
+                    "maxLength": 50,
+                    "type": "string"
+                  },
+                  "LastName": {
+                    "title": "String",
+                    "maxLength": 50,
+                    "type": "string"
+                  },
+                  "Username": {
+                    "title": "String",
+                    "maxLength": 50,
+                    "type": "string"
+                  },
+                  "Email": {
+                    "title": "String",
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "EmailConfirmationUrl": {
+                    "title": "String",
+                    "type": "string"
+                  },
+                  "Password": {
+                    "title": "String",
+                    "maxLength": 30,
+                    "type": "string",
+                    "format": "password"
+                  },
+                  "Country": {
+                    "title": "String",
+                    "type": "string"
+                  },
+                  "Gender": {
+                    "title": "String",
+                    "type": "string"
+                  },
+                  "ProfilePicture": {
+                    "title": "IFormFile",
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "FirstName": {
+                  "style": "form"
+                },
+                "LastName": {
+                  "style": "form"
+                },
+                "Username": {
+                  "style": "form"
+                },
+                "Email": {
+                  "style": "form"
+                },
+                "EmailConfirmationUrl": {
+                  "style": "form"
+                },
+                "Password": {
+                  "style": "form"
+                },
+                "Country": {
+                  "style": "form"
+                },
+                "Gender": {
+                  "style": "form"
+                },
+                "ProfilePicture": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationResultSuccessModel"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationResultSuccessModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationResultSuccessModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationResultErrorModel"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationResultErrorModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationResultErrorModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Identity/login": {
+      "post": {
+        "tags": [
+          "Identity"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginInputModel"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginInputModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginInputModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginInputModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationResultSuccessModel"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationResultSuccessModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationResultSuccessModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationResultErrorModel"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationResultErrorModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationResultErrorModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Identity/confirmEmail": {
+      "post": {
+        "tags": [
+          "Identity"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "schema": {
+              "title": "String",
+              "type": "string"
+            }
+          },
+          {
+            "name": "token",
+            "in": "query",
+            "schema": {
+              "title": "String",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/PostFeed/new": {
+      "get": {
+        "tags": [
+          "PostFeed"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "title": "IEnumerable`1",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FeedCommunityPostModel"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "title": "IEnumerable`1",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FeedCommunityPostModel"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "title": "IEnumerable`1",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FeedCommunityPostModel"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/PostFeed/top": {
+      "get": {
+        "tags": [
+          "PostFeed"
+        ],
+        "parameters": [
+          {
+            "name": "range",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/TimeRange"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "title": "IEnumerable`1",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FeedCommunityPostModel"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "title": "IEnumerable`1",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FeedCommunityPostModel"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "title": "IEnumerable`1",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FeedCommunityPostModel"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Posts": {
+      "post": {
+        "tags": [
+          "Posts"
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "CommunityId",
+                  "Content",
+                  "Title"
+                ],
+                "type": "object",
+                "properties": {
+                  "CommunityId": {
+                    "title": "String",
+                    "type": "string"
+                  },
+                  "Title": {
+                    "title": "String",
+                    "maxLength": 200,
+                    "minLength": 6,
+                    "type": "string"
+                  },
+                  "Content": {
+                    "title": "String",
+                    "maxLength": 200,
+                    "minLength": 6,
+                    "type": "string"
+                  },
+                  "Tags": {
+                    "title": "IEnumerable`1",
+                    "type": "array",
+                    "items": {
+                      "title": "String",
+                      "type": "string"
+                    }
+                  },
+                  "Media": {
+                    "title": "IFormFile",
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "CommunityId": {
+                  "style": "form"
+                },
+                "Title": {
+                  "style": "form"
+                },
+                "Content": {
+                  "style": "form"
+                },
+                "Tags": {
+                  "style": "form"
+                },
+                "Media": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommunityPost"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommunityPost"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommunityPost"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Posts/{postId}": {
+      "get": {
+        "tags": [
+          "Posts"
+        ],
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "title": "String",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostDetailsModel"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostDetailsModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostDetailsModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Posts"
+        ],
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "title": "String",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Posts"
+        ],
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "title": "String",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "Content",
+                  "PostId",
+                  "Title"
+                ],
+                "type": "object",
+                "properties": {
+                  "PostId": {
+                    "title": "String",
+                    "type": "string"
+                  },
+                  "Title": {
+                    "title": "String",
+                    "maxLength": 200,
+                    "minLength": 6,
+                    "type": "string"
+                  },
+                  "Content": {
+                    "title": "String",
+                    "maxLength": 200,
+                    "minLength": 6,
+                    "type": "string"
+                  },
+                  "Tags": {
+                    "title": "IEnumerable`1",
+                    "type": "array",
+                    "items": {
+                      "title": "String",
+                      "type": "string"
+                    }
+                  },
+                  "Media": {
+                    "title": "IFormFile",
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "PostId": {
+                  "style": "form"
+                },
+                "Title": {
+                  "style": "form"
+                },
+                "Content": {
+                  "style": "form"
+                },
+                "Tags": {
+                  "style": "form"
+                },
+                "Media": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommunityPost"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommunityPost"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommunityPost"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Posts/community/{communityId}": {
+      "get": {
+        "tags": [
+          "Posts"
+        ],
+        "parameters": [
+          {
+            "name": "communityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "title": "String",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "title": "IEnumerable`1",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CommunityPostModel"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "title": "IEnumerable`1",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CommunityPostModel"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "title": "IEnumerable`1",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CommunityPostModel"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/PostVotes/up/{postId}": {
+      "post": {
+        "tags": [
+          "PostVotes"
+        ],
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "title": "String",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostVote"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostVote"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostVote"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "PostVotes"
+        ],
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "title": "String",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/PostVotes/down/{postId}": {
+      "post": {
+        "tags": [
+          "PostVotes"
+        ],
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "title": "String",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostVote"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostVote"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostVote"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "PostVotes"
+        ],
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "title": "String",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Search/users": {
+      "get": {
+        "tags": [
+          "Search"
+        ],
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "schema": {
+              "title": "String",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "title": "IEnumerable`1",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserSearchModel"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "title": "IEnumerable`1",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserSearchModel"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "title": "IEnumerable`1",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserSearchModel"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Search/communities": {
+      "get": {
+        "tags": [
+          "Search"
+        ],
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "schema": {
+              "title": "String",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "title": "IEnumerable`1",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CommunitySearchModel"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "title": "IEnumerable`1",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CommunitySearchModel"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "title": "IEnumerable`1",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CommunitySearchModel"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Search/posts": {
+      "get": {
+        "tags": [
+          "Search"
+        ],
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "schema": {
+              "title": "String",
+              "type": "string"
+            }
+          },
+          {
+            "name": "range",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/TimeRange"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "title": "IEnumerable`1",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PostSearchModel"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "title": "IEnumerable`1",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PostSearchModel"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "title": "IEnumerable`1",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PostSearchModel"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/UserCommunities/join/{communityId}": {
+      "post": {
+        "tags": [
+          "UserCommunities"
+        ],
+        "parameters": [
+          {
+            "name": "communityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "title": "String",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserCommunity"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserCommunity"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserCommunity"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/UserCommunities/leave/{communityId}": {
+      "post": {
+        "tags": [
+          "UserCommunities"
+        ],
+        "parameters": [
+          {
+            "name": "communityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "title": "String",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/UserCommunities/approve/{communityId}/{userId}": {
+      "post": {
+        "tags": [
+          "UserCommunities"
+        ],
+        "parameters": [
+          {
+            "name": "communityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "title": "String",
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "title": "String",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserCommunity"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserCommunity"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserCommunity"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/UserCommunities/{communityId}": {
+      "get": {
+        "tags": [
+          "UserCommunities"
+        ],
+        "parameters": [
+          {
+            "name": "communityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "title": "String",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/UserCommunities/{userId}": {
+      "get": {
+        "tags": [
+          "UserCommunities"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "title": "String",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "title": "IEnumerable`1",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserCommunityModel"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "title": "IEnumerable`1",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserCommunityModel"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "title": "IEnumerable`1",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserCommunityModel"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Users/{userId}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "title": "String",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDetailsModel"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDetailsModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDetailsModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Users": {
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "AboutContent",
+                  "Country"
+                ],
+                "type": "object",
+                "properties": {
+                  "FirstName": {
+                    "title": "String",
+                    "maxLength": 50,
+                    "minLength": 3,
+                    "type": "string"
+                  },
+                  "LastName": {
+                    "title": "String",
+                    "maxLength": 50,
+                    "minLength": 3,
+                    "type": "string"
+                  },
+                  "Gender": {
+                    "title": "String",
+                    "type": "string"
+                  },
+                  "Country": {
+                    "title": "String",
+                    "type": "string"
+                  },
+                  "AboutContent": {
+                    "title": "String",
+                    "maxLength": 300,
+                    "type": "string"
+                  },
+                  "Picture": {
+                    "title": "IFormFile",
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "FirstName": {
+                  "style": "form"
+                },
+                "LastName": {
+                  "style": "form"
+                },
+                "Gender": {
+                  "style": "form"
+                },
+                "Country": {
+                  "style": "form"
+                },
+                "AboutContent": {
+                  "style": "form"
+                },
+                "Picture": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Accepted",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationUser"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationUser"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationUser"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ApplicationUser": {
+        "title": "ApplicationUser",
+        "required": [
+          "firstName",
+          "lastName"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "userName": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "normalizedUserName": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "normalizedEmail": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "emailConfirmed": {
+            "title": "Boolean",
+            "type": "boolean"
+          },
+          "passwordHash": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "securityStamp": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "concurrencyStamp": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "phoneNumber": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "phoneNumberConfirmed": {
+            "title": "Boolean",
+            "type": "boolean"
+          },
+          "twoFactorEnabled": {
+            "title": "Boolean",
+            "type": "boolean"
+          },
+          "lockoutEnd": {
+            "title": "Nullable`1",
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "lockoutEnabled": {
+            "title": "Boolean",
+            "type": "boolean"
+          },
+          "accessFailedCount": {
+            "title": "Int32",
+            "type": "integer",
+            "format": "int32"
+          },
+          "firstName": {
+            "title": "String",
+            "maxLength": 50,
+            "minLength": 3,
+            "type": "string"
+          },
+          "lastName": {
+            "title": "String",
+            "maxLength": 50,
+            "minLength": 3,
+            "type": "string"
+          },
+          "profile": {
+            "$ref": "#/components/schemas/UserProfile"
+          },
+          "score": {
+            "$ref": "#/components/schemas/UserScore"
+          },
+          "createdOn": {
+            "title": "DateTime",
+            "type": "string",
+            "format": "date-time"
+          },
+          "modifiedOn": {
+            "title": "Nullable`1",
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "isDeleted": {
+            "title": "Boolean",
+            "type": "boolean"
+          },
+          "deletedOn": {
+            "title": "Nullable`1",
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "communities": {
+            "title": "ICollection`1",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserCommunity"
+            },
+            "nullable": true
+          },
+          "communitiesAdministrated": {
+            "title": "ICollection`1",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Community"
+            },
+            "nullable": true
+          },
+          "communityPosts": {
+            "title": "ICollection`1",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CommunityPost"
+            },
+            "nullable": true
+          },
+          "roles": {
+            "title": "ICollection`1",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StringIdentityUserRole"
+            },
+            "nullable": true
+          },
+          "claims": {
+            "title": "ICollection`1",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StringIdentityUserClaim"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AuthenticationResultErrorModel": {
+        "title": "AuthenticationResultErrorModel",
+        "type": "object",
+        "properties": {
+          "errors": {
+            "title": "IEnumerable`1",
+            "type": "array",
+            "items": {
+              "title": "String",
+              "type": "string"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AuthenticationResultSuccessModel": {
+        "title": "AuthenticationResultSuccessModel",
+        "type": "object",
+        "properties": {
+          "userId": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "token": {
+            "$ref": "#/components/schemas/JwtToken"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CommentVote": {
+        "title": "CommentVote",
+        "required": [
+          "commentId",
+          "type",
+          "userId"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "createdOn": {
+            "title": "DateTime",
+            "type": "string",
+            "format": "date-time"
+          },
+          "modifiedOn": {
+            "title": "Nullable`1",
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "isDeleted": {
+            "title": "Boolean",
+            "type": "boolean"
+          },
+          "deletedOn": {
+            "title": "Nullable`1",
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "commentId": {
+            "title": "String",
+            "minLength": 1,
+            "type": "string"
+          },
+          "comment": {
+            "$ref": "#/components/schemas/PostComment"
+          },
+          "userId": {
+            "title": "String",
+            "minLength": 1,
+            "type": "string"
+          },
+          "user": {
+            "$ref": "#/components/schemas/ApplicationUser"
+          },
+          "type": {
+            "$ref": "#/components/schemas/VoteType"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Community": {
+        "title": "Community",
+        "required": [
+          "adminId",
+          "name",
+          "picturePublicId",
+          "pictureUrl",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "createdOn": {
+            "title": "DateTime",
+            "type": "string",
+            "format": "date-time"
+          },
+          "modifiedOn": {
+            "title": "Nullable`1",
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "isDeleted": {
+            "title": "Boolean",
+            "type": "boolean"
+          },
+          "deletedOn": {
+            "title": "Nullable`1",
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "members": {
+            "title": "ICollection`1",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserCommunity"
+            },
+            "nullable": true
+          },
+          "adminId": {
+            "title": "String",
+            "minLength": 1,
+            "type": "string"
+          },
+          "admin": {
+            "$ref": "#/components/schemas/ApplicationUser"
+          },
+          "type": {
+            "$ref": "#/components/schemas/CommunityType"
+          },
+          "name": {
+            "title": "String",
+            "maxLength": 50,
+            "minLength": 3,
+            "pattern": "^[A-Za-z][A-Za-z0-9_]*$",
+            "type": "string"
+          },
+          "description": {
+            "title": "String",
+            "maxLength": 500,
+            "type": "string",
+            "nullable": true
+          },
+          "pictureUrl": {
+            "title": "String",
+            "minLength": 1,
+            "type": "string",
+            "format": "uri"
+          },
+          "picturePublicId": {
+            "title": "String",
+            "maxLength": 50,
+            "minLength": 1,
+            "type": "string"
+          },
+          "tags": {
+            "title": "ICollection`1",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CommunityTag"
+            },
+            "nullable": true
+          },
+          "posts": {
+            "title": "ICollection`1",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CommunityPost"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CommunityDetailsAdminModel": {
+        "title": "CommunityDetailsAdminModel",
+        "type": "object",
+        "properties": {
+          "id": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "userName": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "profilePictureUrl": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "profilePicturePublicId": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CommunityDetailsModel": {
+        "title": "CommunityDetailsModel",
+        "type": "object",
+        "properties": {
+          "admin": {
+            "$ref": "#/components/schemas/CommunityDetailsAdminModel"
+          },
+          "type": {
+            "$ref": "#/components/schemas/CommunityType"
+          },
+          "name": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "pictureUrl": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "picturePublicId": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "hasUserJoined": {
+            "title": "Boolean",
+            "type": "boolean"
+          },
+          "tags": {
+            "title": "ICollection`1",
+            "type": "array",
+            "items": {
+              "title": "String",
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "membersCount": {
+            "title": "Int32",
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdOn": {
+            "title": "DateTime",
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CommunityPost": {
+        "title": "CommunityPost",
+        "required": [
+          "authorId",
+          "communityId",
+          "content",
+          "mediaPublicId",
+          "title",
+          "voteScore"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "createdOn": {
+            "title": "DateTime",
+            "type": "string",
+            "format": "date-time"
+          },
+          "modifiedOn": {
+            "title": "Nullable`1",
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "isDeleted": {
+            "title": "Boolean",
+            "type": "boolean"
+          },
+          "deletedOn": {
+            "title": "Nullable`1",
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "authorId": {
+            "title": "String",
+            "minLength": 1,
+            "type": "string"
+          },
+          "author": {
+            "$ref": "#/components/schemas/ApplicationUser"
+          },
+          "communityId": {
+            "title": "String",
+            "minLength": 1,
+            "type": "string"
+          },
+          "community": {
+            "$ref": "#/components/schemas/Community"
+          },
+          "mediaUrl": {
+            "title": "String",
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "mediaPublicId": {
+            "title": "String",
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": {
+            "title": "String",
+            "maxLength": 200,
+            "minLength": 6,
+            "type": "string"
+          },
+          "content": {
+            "title": "String",
+            "maxLength": 200,
+            "minLength": 6,
+            "type": "string"
+          },
+          "voteScore": {
+            "title": "Int32",
+            "type": "integer",
+            "format": "int32"
+          },
+          "votes": {
+            "title": "ICollection`1",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PostVote"
+            },
+            "nullable": true
+          },
+          "comments": {
+            "title": "ICollection`1",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PostComment"
+            },
+            "nullable": true
+          },
+          "tags": {
+            "title": "ICollection`1",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PostTag"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CommunityPostModel": {
+        "title": "CommunityPostModel",
+        "type": "object",
+        "properties": {
+          "id": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "communityId": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "authorId": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "authorUserName": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "mediaUrl": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "mediaPublicId": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "createdOn": {
+            "title": "DateTime",
+            "type": "string",
+            "format": "date-time"
+          },
+          "modifiedOn": {
+            "title": "Nullable`1",
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "title": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "content": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "voteScore": {
+            "title": "Int32",
+            "type": "integer",
+            "format": "int32"
+          },
+          "userVote": {
+            "$ref": "#/components/schemas/UserVoteModel"
+          },
+          "commentsCount": {
+            "title": "Int32",
+            "type": "integer",
+            "format": "int32"
+          },
+          "tags": {
+            "title": "IEnumerable`1",
+            "type": "array",
+            "items": {
+              "title": "String",
+              "type": "string"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CommunitySearchModel": {
+        "title": "CommunitySearchModel",
+        "type": "object",
+        "properties": {
+          "id": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "membersCount": {
+            "title": "Int32",
+            "type": "integer",
+            "format": "int32"
+          },
+          "pictureUrl": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "picturePublicId": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "tags": {
+            "title": "IEnumerable`1",
+            "type": "array",
+            "items": {
+              "title": "String",
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "hasUserJoined": {
+            "title": "Boolean",
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CommunityTag": {
+        "title": "CommunityTag",
+        "required": [
+          "communityId",
+          "tagId"
+        ],
+        "type": "object",
+        "properties": {
+          "communityId": {
+            "title": "String",
+            "minLength": 1,
+            "type": "string"
+          },
+          "community": {
+            "$ref": "#/components/schemas/Community"
+          },
+          "tagId": {
+            "title": "String",
+            "minLength": 1,
+            "type": "string"
+          },
+          "tag": {
+            "$ref": "#/components/schemas/Tag"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CommunityType": {
+        "title": "CommunityType",
+        "enum": [
+          1,
+          2,
+          3
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "Country": {
+        "title": "Country",
+        "required": [
+          "code",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "title": "String",
+            "maxLength": 50,
+            "minLength": 1,
+            "type": "string"
+          },
+          "code": {
+            "title": "String",
+            "maxLength": 6,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CountryModel": {
+        "title": "CountryModel",
+        "type": "object",
+        "properties": {
+          "code": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "FeedCommunityModel": {
+        "title": "FeedCommunityModel",
+        "type": "object",
+        "properties": {
+          "id": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "pictureUrl": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "picturePublicId": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "FeedCommunityPostModel": {
+        "title": "FeedCommunityPostModel",
+        "type": "object",
+        "properties": {
+          "author": {
+            "$ref": "#/components/schemas/FeedPostAuthorModel"
+          },
+          "community": {
+            "$ref": "#/components/schemas/FeedCommunityModel"
+          },
+          "id": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "mediaUrl": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "mediaPublicId": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "content": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "createdOn": {
+            "title": "DateTime",
+            "type": "string",
+            "format": "date-time"
+          },
+          "modifiedOn": {
+            "title": "Nullable`1",
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "voteScore": {
+            "title": "Int32",
+            "type": "integer",
+            "format": "int32"
+          },
+          "commentsCount": {
+            "title": "Int32",
+            "type": "integer",
+            "format": "int32"
+          },
+          "userVote": {
+            "$ref": "#/components/schemas/UserVoteModel"
+          }
+        },
+        "additionalProperties": false
+      },
+      "FeedPostAuthorModel": {
+        "title": "FeedPostAuthorModel",
+        "type": "object",
+        "properties": {
+          "id": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "userName": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Gender": {
+        "title": "Gender",
+        "enum": [
+          1,
+          2,
+          3
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "JwtToken": {
+        "title": "JwtToken",
+        "type": "object",
+        "properties": {
+          "value": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "expiresAt": {
+            "title": "DateTime",
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "LoginInputModel": {
+        "title": "LoginInputModel",
+        "required": [
+          "password",
+          "username"
+        ],
+        "type": "object",
+        "properties": {
+          "username": {
+            "title": "String",
+            "minLength": 1,
+            "type": "string"
+          },
+          "password": {
+            "title": "String",
+            "minLength": 1,
+            "type": "string",
+            "format": "password"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PostComment": {
+        "title": "PostComment",
+        "required": [
+          "authorId",
+          "content",
+          "postId",
+          "voteScore"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "createdOn": {
+            "title": "DateTime",
+            "type": "string",
+            "format": "date-time"
+          },
+          "modifiedOn": {
+            "title": "Nullable`1",
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "isDeleted": {
+            "title": "Boolean",
+            "type": "boolean"
+          },
+          "deletedOn": {
+            "title": "Nullable`1",
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "postId": {
+            "title": "String",
+            "minLength": 1,
+            "type": "string"
+          },
+          "post": {
+            "$ref": "#/components/schemas/CommunityPost"
+          },
+          "authorId": {
+            "title": "String",
+            "minLength": 1,
+            "type": "string"
+          },
+          "author": {
+            "$ref": "#/components/schemas/ApplicationUser"
+          },
+          "content": {
+            "title": "String",
+            "maxLength": 1000,
+            "minLength": 3,
+            "type": "string"
+          },
+          "voteScore": {
+            "title": "Int32",
+            "type": "integer",
+            "format": "int32"
+          },
+          "votes": {
+            "title": "ICollection`1",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CommentVote"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PostCommentAuthorModel": {
+        "title": "PostCommentAuthorModel",
+        "type": "object",
+        "properties": {
+          "id": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "userName": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "profilePictureUrl": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "profilePicturePublicId": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PostCommentDetailsModel": {
+        "title": "PostCommentDetailsModel",
+        "type": "object",
+        "properties": {
+          "author": {
+            "$ref": "#/components/schemas/PostCommentAuthorModel"
+          },
+          "content": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "createdOn": {
+            "title": "DateTime",
+            "type": "string",
+            "format": "date-time"
+          },
+          "modifiedOn": {
+            "title": "Nullable`1",
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "voteScore": {
+            "title": "Int32",
+            "type": "integer",
+            "format": "int32"
+          },
+          "userVote": {
+            "$ref": "#/components/schemas/UserVoteModel"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PostDetailsModel": {
+        "title": "PostDetailsModel",
+        "type": "object",
+        "properties": {
+          "id": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "author": {
+            "$ref": "#/components/schemas/FeedPostAuthorModel"
+          },
+          "community": {
+            "$ref": "#/components/schemas/FeedCommunityModel"
+          },
+          "mediaUrl": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "mediaPublicId": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "content": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "voteScore": {
+            "title": "Int32",
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdOn": {
+            "title": "DateTime",
+            "type": "string",
+            "format": "date-time"
+          },
+          "modifiedOn": {
+            "title": "Nullable`1",
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "userVote": {
+            "$ref": "#/components/schemas/UserVoteModel"
+          },
+          "comments": {
+            "title": "ICollection`1",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PostCommentDetailsModel"
+            },
+            "nullable": true
+          },
+          "tags": {
+            "title": "ICollection`1",
+            "type": "array",
+            "items": {
+              "title": "String",
+              "type": "string"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PostSearchModel": {
+        "title": "PostSearchModel",
+        "type": "object",
+        "properties": {
+          "id": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "content": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "authorUserName": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "authorId": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "communityId": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "communityName": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "communityPictureUrl": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "communityPicturePublicId": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "voteScore": {
+            "title": "Int32",
+            "type": "integer",
+            "format": "int32"
+          },
+          "commentsCount": {
+            "title": "Int32",
+            "type": "integer",
+            "format": "int32"
+          },
+          "mediaUrl": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "mediaPublicId": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "createdOn": {
+            "title": "DateTime",
+            "type": "string",
+            "format": "date-time"
+          },
+          "modifiedOn": {
+            "title": "Nullable`1",
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PostTag": {
+        "title": "PostTag",
+        "required": [
+          "postId",
+          "tagId"
+        ],
+        "type": "object",
+        "properties": {
+          "postId": {
+            "title": "String",
+            "minLength": 1,
+            "type": "string"
+          },
+          "post": {
+            "$ref": "#/components/schemas/CommunityPost"
+          },
+          "tagId": {
+            "title": "String",
+            "minLength": 1,
+            "type": "string"
+          },
+          "tag": {
+            "$ref": "#/components/schemas/Tag"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PostVote": {
+        "title": "PostVote",
+        "required": [
+          "postId",
+          "type",
+          "userId"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "createdOn": {
+            "title": "DateTime",
+            "type": "string",
+            "format": "date-time"
+          },
+          "modifiedOn": {
+            "title": "Nullable`1",
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "isDeleted": {
+            "title": "Boolean",
+            "type": "boolean"
+          },
+          "deletedOn": {
+            "title": "Nullable`1",
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "postId": {
+            "title": "String",
+            "minLength": 1,
+            "type": "string"
+          },
+          "post": {
+            "$ref": "#/components/schemas/CommunityPost"
+          },
+          "userId": {
+            "title": "String",
+            "minLength": 1,
+            "type": "string"
+          },
+          "user": {
+            "$ref": "#/components/schemas/ApplicationUser"
+          },
+          "type": {
+            "$ref": "#/components/schemas/VoteType"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProblemDetails": {
+        "title": "ProblemDetails",
+        "type": "object",
+        "properties": {
+          "type": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "title": "Nullable`1",
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "detail": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "instance": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": {
+          "title": "Object"
+        }
+      },
+      "StringIdentityUserClaim": {
+        "title": "IdentityUserClaim`1",
+        "type": "object",
+        "properties": {
+          "id": {
+            "title": "Int32",
+            "type": "integer",
+            "format": "int32"
+          },
+          "userId": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "claimType": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "claimValue": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "StringIdentityUserRole": {
+        "title": "IdentityUserRole`1",
+        "type": "object",
+        "properties": {
+          "userId": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "roleId": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Tag": {
+        "title": "Tag",
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "createdOn": {
+            "title": "DateTime",
+            "type": "string",
+            "format": "date-time"
+          },
+          "modifiedOn": {
+            "title": "Nullable`1",
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "name": {
+            "title": "String",
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TimeRange": {
+        "title": "TimeRange",
+        "enum": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "UpdateCommentInputModel": {
+        "title": "UpdateCommentInputModel",
+        "required": [
+          "commentId",
+          "content"
+        ],
+        "type": "object",
+        "properties": {
+          "commentId": {
+            "title": "String",
+            "minLength": 1,
+            "type": "string"
+          },
+          "content": {
+            "title": "String",
+            "maxLength": 1000,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UserCommunity": {
+        "title": "UserCommunity",
+        "required": [
+          "communityId",
+          "status",
+          "userId"
+        ],
+        "type": "object",
+        "properties": {
+          "userId": {
+            "title": "String",
+            "minLength": 1,
+            "type": "string"
+          },
+          "user": {
+            "$ref": "#/components/schemas/ApplicationUser"
+          },
+          "communityId": {
+            "title": "String",
+            "minLength": 1,
+            "type": "string"
+          },
+          "community": {
+            "$ref": "#/components/schemas/Community"
+          },
+          "status": {
+            "$ref": "#/components/schemas/UserCommunityStatus"
+          },
+          "createdOn": {
+            "title": "DateTime",
+            "type": "string",
+            "format": "date-time"
+          },
+          "modifiedOn": {
+            "title": "Nullable`1",
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "isDeleted": {
+            "title": "Boolean",
+            "type": "boolean"
+          },
+          "deletedOn": {
+            "title": "Nullable`1",
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UserCommunityModel": {
+        "title": "UserCommunityModel",
+        "type": "object",
+        "properties": {
+          "id": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "pictureUrl": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "picturePublicId": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UserCommunityStatus": {
+        "title": "UserCommunityStatus",
+        "enum": [
+          1,
+          2
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "UserDetailsModel": {
+        "title": "UserDetailsModel",
+        "type": "object",
+        "properties": {
+          "id": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "userName": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "firstName": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "lastName": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "createdOn": {
+            "title": "DateTime",
+            "type": "string",
+            "format": "date-time"
+          },
+          "profile": {
+            "$ref": "#/components/schemas/UserProfileModel"
+          },
+          "postsScore": {
+            "title": "Int32",
+            "type": "integer",
+            "format": "int32"
+          },
+          "commentsScore": {
+            "title": "Int32",
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UserProfile": {
+        "title": "UserProfile",
+        "required": [
+          "country",
+          "profilePicturePublicId",
+          "profilePictureUrl",
+          "userId"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "createdOn": {
+            "title": "DateTime",
+            "type": "string",
+            "format": "date-time"
+          },
+          "modifiedOn": {
+            "title": "Nullable`1",
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "isDeleted": {
+            "title": "Boolean",
+            "type": "boolean"
+          },
+          "deletedOn": {
+            "title": "Nullable`1",
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "userId": {
+            "title": "String",
+            "minLength": 1,
+            "type": "string"
+          },
+          "user": {
+            "$ref": "#/components/schemas/ApplicationUser"
+          },
+          "profilePictureUrl": {
+            "title": "String",
+            "minLength": 1,
+            "type": "string",
+            "format": "uri"
+          },
+          "profilePicturePublicId": {
+            "title": "String",
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string"
+          },
+          "aboutContent": {
+            "title": "String",
+            "maxLength": 300,
+            "type": "string",
+            "nullable": true
+          },
+          "gender": {
+            "$ref": "#/components/schemas/Gender"
+          },
+          "countryId": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "country": {
+            "$ref": "#/components/schemas/Country"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UserProfileModel": {
+        "title": "UserProfileModel",
+        "type": "object",
+        "properties": {
+          "pictureUrl": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "picturePublicId": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "aboutContent": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "gender": {
+            "$ref": "#/components/schemas/Gender"
+          },
+          "countryName": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "countryCode": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UserScore": {
+        "title": "UserScore",
+        "type": "object",
+        "properties": {
+          "id": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "user": {
+            "$ref": "#/components/schemas/ApplicationUser"
+          },
+          "postsScore": {
+            "title": "Int32",
+            "type": "integer",
+            "format": "int32"
+          },
+          "commentsScore": {
+            "title": "Int32",
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UserSearchModel": {
+        "title": "UserSearchModel",
+        "type": "object",
+        "properties": {
+          "id": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "userName": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "profilePictureUrl": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "profilePicturePublicId": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "postScore": {
+            "title": "Int32",
+            "type": "integer",
+            "format": "int32"
+          },
+          "commentScore": {
+            "title": "Int32",
+            "type": "integer",
+            "format": "int32"
+          },
+          "aboutContent": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UserVoteModel": {
+        "title": "UserVoteModel",
+        "type": "object",
+        "properties": {
+          "id": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
+          },
+          "type": {
+            "$ref": "#/components/schemas/VoteType"
+          }
+        },
+        "additionalProperties": false
+      },
+      "VoteType": {
+        "title": "VoteType",
+        "enum": [
+          0,
+          1
+        ],
+        "type": "integer",
+        "format": "int32"
+      }
+    }
+  }
+}
