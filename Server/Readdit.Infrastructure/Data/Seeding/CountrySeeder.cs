@@ -7,6 +7,8 @@ namespace Readdit.Infrastructure.Data.Seeding;
 
 public class CountrySeeder : ISeeder
 {
+    public int? Priority => 10;
+
     public async Task SeedAsync(ReadditDbContext context, IServiceProvider serviceProvider)
     {
         if (context.Countries.Any())

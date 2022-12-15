@@ -26,7 +26,7 @@ public class CountryService : ICountryService
 
     public async Task<Country?> GetByNameAsync(string name)
         => await _countries
-            .AllAsNoTracking()
+            .All()
             .FirstOrDefaultAsync(c => c.Name == name);
 
     public async Task<Country?> GetByUserAsync(string userId)
