@@ -1,17 +1,19 @@
-﻿namespace Readdit.Services.Data.Authentication.Models;
+﻿using SignalRChat.Services.Security.Jwt;
+
+namespace Readdit.Services.Data.Authentication.Models;
 
 public class AuthenticationResultModel
 {
     public bool Succeeded { get; init; }
     
-    public string UserId { get; init; }
+    public string? UserId { get; init; }
     
-    public string Token { get; init; }
+    public JwtToken? Token { get; init; }
 
     public IEnumerable<string> Errors { get; init; }
         = new List<string>();
 
-    public static AuthenticationResultModel Success(string userId, string token)
+    public static AuthenticationResultModel Success(string userId, JwtToken token)
         => new()
         {
             Succeeded = true,

@@ -34,4 +34,8 @@ public class ApplicationUser : IdentityUser, IAuditableEntity, IDeletableEntity
     public ICollection<Community> CommunitiesAdministrated { get; set; } = new List<Community>();
 
     public ICollection<CommunityPost> CommunityPosts { get; set; } = new List<CommunityPost>();
+
+    public virtual ICollection<IdentityUserRole<string>> Roles { get; set; } = new List<IdentityUserRole<string>>();
+
+    public virtual ICollection<IdentityUserClaim<string>> Claims { get; set; } = new List<IdentityUserClaim<string>>();
 }
