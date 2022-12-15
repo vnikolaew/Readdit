@@ -5,6 +5,8 @@ namespace Readdit.Infrastructure.Data.Seeding;
 
 public class ReadditDbContextSeeder : ISeeder
 {
+    public int? Priority => 0;
+
     public async Task SeedAsync(ReadditDbContext context, IServiceProvider serviceProvider)
     {
         if (context is null || serviceProvider is null)
@@ -16,6 +18,7 @@ public class ReadditDbContextSeeder : ISeeder
         var seeders = serviceProvider
             .GetServices<ISeeder>()
             .Where(s => s is not ReadditDbContextSeeder)
+            .OrderBy(s => s.Priority)
             .ToList();
         
         logger.LogInformation("Starting database seeding ... Using {0}.",

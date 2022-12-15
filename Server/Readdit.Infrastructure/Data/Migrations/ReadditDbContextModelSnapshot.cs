@@ -55,6 +55,9 @@ namespace Readdit.Infrastructure.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
 
@@ -66,6 +69,8 @@ namespace Readdit.Infrastructure.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("UserId");
 
@@ -102,7 +107,12 @@ namespace Readdit.Infrastructure.Data.Migrations
                     b.Property<string>("RoleId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("RoleId");
 
@@ -181,10 +191,6 @@ namespace Readdit.Infrastructure.Data.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("CountryId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
@@ -202,9 +208,6 @@ namespace Readdit.Infrastructure.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
-
-                    b.Property<short>("Gender")
-                        .HasColumnType("smallint");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -251,8 +254,6 @@ namespace Readdit.Infrastructure.Data.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CountryId");
 
                     b.HasIndex("IsDeleted");
 
@@ -323,7 +324,8 @@ namespace Readdit.Infrastructure.Data.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -375,8 +377,8 @@ namespace Readdit.Infrastructure.Data.Migrations
 
                     b.Property<string>("Content")
                         .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
@@ -389,12 +391,10 @@ namespace Readdit.Infrastructure.Data.Migrations
 
                     b.Property<string>("MediaPublicId")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MediaUrl")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("ModifiedOn")
                         .HasColumnType("datetime2");
@@ -442,8 +442,8 @@ namespace Readdit.Infrastructure.Data.Migrations
 
                     b.Property<string>("Code")
                         .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                        .HasMaxLength(6)
+                        .HasColumnType("nvarchar(6)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -466,8 +466,8 @@ namespace Readdit.Infrastructure.Data.Migrations
 
                     b.Property<string>("Content")
                         .IsRequired()
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
@@ -604,7 +604,7 @@ namespace Readdit.Infrastructure.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserCommunity");
+                    b.ToTable("UserCommunities");
                 });
 
             modelBuilder.Entity("Readdit.Infrastructure.Models.UserProfile", b =>
@@ -613,14 +613,23 @@ namespace Readdit.Infrastructure.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("AboutContent")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<string>("CountryId")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)")
+                        .HasDefaultValue("0b8374c5-1387-4729-9ed6-5f34c91dc5a9");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DeletedOn")
                         .HasColumnType("datetime2");
+
+                    b.Property<short>("Gender")
+                        .HasColumnType("smallint");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -630,8 +639,8 @@ namespace Readdit.Infrastructure.Data.Migrations
 
                     b.Property<string>("ProfilePicturePublicId")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("ProfilePictureUrl")
                         .IsRequired()
@@ -643,12 +652,34 @@ namespace Readdit.Infrastructure.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CountryId");
+
                     b.HasIndex("IsDeleted");
 
                     b.HasIndex("UserId")
                         .IsUnique();
 
                     b.ToTable("UserProfiles");
+                });
+
+            modelBuilder.Entity("Readdit.Infrastructure.Models.UserScore", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("CommentsScore")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.Property<int>("PostsScore")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserScores");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -662,6 +693,10 @@ namespace Readdit.Infrastructure.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
+                    b.HasOne("Readdit.Infrastructure.Models.ApplicationUser", null)
+                        .WithMany("Claims")
+                        .HasForeignKey("ApplicationUserId");
+
                     b.HasOne("Readdit.Infrastructure.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
@@ -680,6 +715,10 @@ namespace Readdit.Infrastructure.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
+                    b.HasOne("Readdit.Infrastructure.Models.ApplicationUser", null)
+                        .WithMany("Roles")
+                        .HasForeignKey("ApplicationUserId");
+
                     b.HasOne("Readdit.Infrastructure.Models.ApplicationRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
@@ -700,17 +739,6 @@ namespace Readdit.Infrastructure.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Readdit.Infrastructure.Models.ApplicationUser", b =>
-                {
-                    b.HasOne("Readdit.Infrastructure.Models.Country", "Country")
-                        .WithMany()
-                        .HasForeignKey("CountryId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Country");
                 });
 
             modelBuilder.Entity("Readdit.Infrastructure.Models.CommentVote", b =>
@@ -859,9 +887,28 @@ namespace Readdit.Infrastructure.Data.Migrations
 
             modelBuilder.Entity("Readdit.Infrastructure.Models.UserProfile", b =>
                 {
+                    b.HasOne("Readdit.Infrastructure.Models.Country", "Country")
+                        .WithMany()
+                        .HasForeignKey("CountryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("Readdit.Infrastructure.Models.ApplicationUser", "User")
                         .WithOne("Profile")
                         .HasForeignKey("Readdit.Infrastructure.Models.UserProfile", "UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Country");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Readdit.Infrastructure.Models.UserScore", b =>
+                {
+                    b.HasOne("Readdit.Infrastructure.Models.ApplicationUser", "User")
+                        .WithOne("Score")
+                        .HasForeignKey("Readdit.Infrastructure.Models.UserScore", "Id")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -870,6 +917,8 @@ namespace Readdit.Infrastructure.Data.Migrations
 
             modelBuilder.Entity("Readdit.Infrastructure.Models.ApplicationUser", b =>
                 {
+                    b.Navigation("Claims");
+
                     b.Navigation("Communities");
 
                     b.Navigation("CommunitiesAdministrated");
@@ -877,6 +926,11 @@ namespace Readdit.Infrastructure.Data.Migrations
                     b.Navigation("CommunityPosts");
 
                     b.Navigation("Profile")
+                        .IsRequired();
+
+                    b.Navigation("Roles");
+
+                    b.Navigation("Score")
                         .IsRequired();
                 });
 

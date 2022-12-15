@@ -7,8 +7,15 @@ public static class ResultExtensions
 {
     public static IActionResult ToActionResult(this AuthenticationResultModel authResultModel)
         => authResultModel.Succeeded
-            ? new OkObjectResult(new { authResultModel.Token, authResultModel.UserId })
-            : new BadRequestObjectResult(new { authResultModel.Errors });
+            ? new OkObjectResult(new AuthenticationResultSuccessModel
+            {
+                Token = authResultModel.Token!,
+                UserId = authResultModel.UserId!
+            })
+            : new BadRequestObjectResult(new AuthenticationResultErrorModel
+            {
+                Errors = authResultModel.Errors
+            });
     
     public static IActionResult OkOrBadRequest<T>(this T result)
         => result is null
