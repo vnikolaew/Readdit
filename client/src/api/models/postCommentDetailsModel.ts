@@ -9,6 +9,7 @@ import type { UserVoteModel } from "./userVoteModel";
 
 export interface PostCommentDetailsModel {
    author?: PostCommentAuthorModel;
+   id?: string | null;
    content?: string | null;
    createdOn?: string;
    modifiedOn?: string | null;
