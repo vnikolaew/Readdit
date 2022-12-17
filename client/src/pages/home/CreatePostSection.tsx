@@ -17,10 +17,10 @@ const CreatePostSection: FC = () => {
          borderRadius={6}
          borderColor="gray"
          onClick={async () => {
-            await sleep(200);
+            await sleep(1000);
             navigate("/create/post");
          }}
-         width={"450px"}
+         width={"550px"}
          _active={{ bgColor: "blackAlpha.900" }}
          py={6}
          px={2}
@@ -37,7 +37,7 @@ const CreatePostSection: FC = () => {
             >
                <AvatarBadge
                   borderColor={"black"}
-                  borderWidth={0.4}
+                  borderWidth={0.8}
                   boxSize={".7rem"}
                   bg={"green.500"}
                />

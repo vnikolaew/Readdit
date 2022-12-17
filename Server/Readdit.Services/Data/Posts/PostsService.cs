@@ -235,17 +235,26 @@ public class PostsService : IPostsService
         await _postScores.DecreaseForUserAsync(post.AuthorId, postComments.Count);
     }
 
-    public Task<T?> GetPostDetailsByIdAsync<T>(string postId)
+    public Task<T?> GetPostDetailsByIdAsync<T>(string postId, string userId)
         => _posts
             .AllAsNoTracking()
             .Where(p => p.Id == postId)
-            .To<T>()
+            .To<T>(new { currentUserId = userId })
             .FirstOrDefaultAsync();
 
     public async Task<IEnumerable<T>> GetAllByCommunity<T>(string communityId, string userId)
         => await _posts
             .AllAsNoTracking()
             .Where(p => p.CommunityId == communityId)
+            .OrderByDescending(p => p.CreatedOn)
+            .ThenByDescending(p => p.Votes.Count)
+            .To<T>(new { currentUserId = userId })
+            .ToListAsync();
+
+    public async Task<IEnumerable<T>> GetAllByUser<T>(string userId)
+        => await _posts
+            .AllAsNoTracking()
+            .Where(p => p.AuthorId == userId)
             .OrderByDescending(p => p.CreatedOn)
             .ThenByDescending(p => p.Votes.Count)
             .To<T>(new { currentUserId = userId })

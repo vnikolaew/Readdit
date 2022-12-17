@@ -16,7 +16,7 @@ public class CommentsController : ApiController
     [HttpPost]
     [ProducesResponseType((int) HttpStatusCode.OK)]
     [ProducesResponseType((int) HttpStatusCode.BadRequest)]
-    public async Task<IActionResult> Create([FromForm] CreateCommentInputModel commentInputModel)
+    public async Task<IActionResult> Create(CreateCommentInputModel commentInputModel)
     {
         var comment = await _commentsService.CreateAsync(
             User.GetId()!,

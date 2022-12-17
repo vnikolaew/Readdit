@@ -9,7 +9,7 @@ export type Gender = typeof Gender[keyof typeof Gender];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const Gender = {
-   "1": 1,
-   "2": 2,
-   "3": 3,
+   "1": "Male",
+   "2": "Female",
+   "3": "Other",
 } as const;

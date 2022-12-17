@@ -18,7 +18,7 @@ const Navbar: FC = () => {
       <Flex
          color={"white"}
          bgColor={"blackAlpha.900"}
-         py={4}
+         py={2}
          px={10}
          fontSize={20}
          alignItems={"center"}
@@ -26,7 +26,9 @@ const Navbar: FC = () => {
          direction={"row"}
       >
          <HStack gap={10}>
-            <Text fontSize={24}>Readdit</Text>
+            <ReactLink to={"/"}>
+               <Text cursor={"pointer"} fontSize={24}>Readdit</Text>
+            </ReactLink>
             <CommunityNavigation />
          </HStack>
          <HStack fontSize={17} gap={16}>

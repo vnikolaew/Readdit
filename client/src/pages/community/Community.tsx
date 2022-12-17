@@ -8,7 +8,6 @@ const Community: FC = () => {
    const { data: communityDetails, isLoading } =
       useGetCommunityDetailsQuery(communityName);
 
-   console.log(communityDetails);
    return (
       <Flex>
          <Box>Welcome to {communityName}!</Box>

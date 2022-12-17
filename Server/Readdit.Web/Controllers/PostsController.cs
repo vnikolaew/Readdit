@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Readdit.Infrastructure.Models;
+using Readdit.Services.Data.PostFeed.Models;
 using Readdit.Services.Data.Posts;
 using Readdit.Services.Data.Posts.Models;
 using Readdit.Web.Infrastructure.Extensions;
@@ -39,7 +40,7 @@ public class PostsController : ApiController
     [ProducesResponseType((int) HttpStatusCode.NotFound)]
     public async Task<IActionResult> Details([FromRoute]string postId)
     {
-        var post = await _postsService.GetPostDetailsByIdAsync<PostDetailsModel>(postId);
+        var post = await _postsService.GetPostDetailsByIdAsync<PostDetailsModel>(postId, User.GetId()!);
         return post.OkOrNotFound();
     }
 
@@ -81,6 +82,17 @@ public class PostsController : ApiController
     {
         var postsByCommunity = await _postsService
             .GetAllByCommunity<CommunityPostModel>(communityId, User.GetId()!);
+        return Ok(postsByCommunity);
+    }
+    
+    [HttpGet]
+    [Route("user/{communityId}")]
+    [ProducesResponseType((int) HttpStatusCode.OK, Type = typeof(IEnumerable<CommunityPostModel>))]
+    public async Task<IActionResult> AllByUser(
+        [FromRoute] string communityId)
+    {
+        var postsByCommunity = await _postsService
+            .GetAllByUser<FeedCommunityPostModel>(User.GetId()!);
         return Ok(postsByCommunity);
     }
 }

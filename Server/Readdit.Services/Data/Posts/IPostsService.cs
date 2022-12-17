@@ -22,7 +22,8 @@ public interface IPostsService
         string content,
         IFormFile? media);
 
-    Task<T?> GetPostDetailsByIdAsync<T>(string postId);
+    Task<T?> GetPostDetailsByIdAsync<T>(string postId, string userId);
 
     Task<IEnumerable<T>> GetAllByCommunity<T>(string communityId, string userId);
+    Task<IEnumerable<T>> GetAllByUser<T>(string userId);
 }

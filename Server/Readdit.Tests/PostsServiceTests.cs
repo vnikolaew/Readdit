@@ -5,6 +5,7 @@ using Readdit.Infrastructure.Models.Enums;
 using Readdit.Services.Data.Tags;
 using Readdit.Services.External.Cloudinary;
 using Readdit.Services.External.Cloudinary.Models;
+using Readdit.Tests.Common;
 
 namespace Readdit.Tests.PostsService;
 
@@ -158,6 +159,7 @@ public class PostsServiceTests
         Assert.That(post.Title, Is.EqualTo("Test Title"));
         Assert.That(post.MediaUrl, Is.EqualTo(string.Empty));
         Assert.That(post.MediaPublicId, Is.EqualTo(string.Empty));
+        
         _cloudinaryServiceMock.Verify(cs =>
                 cs.UploadAsync(
                     It.IsAny<Stream>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never());

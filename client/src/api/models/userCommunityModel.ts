@@ -10,6 +10,5 @@ export interface UserCommunityModel {
    name?: string | null;
    pictureUrl?: string | null;
    picturePublicId?: string | null;
-
-   membersCount: number;
+   membersCount?: number;
 }

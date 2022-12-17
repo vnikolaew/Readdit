@@ -24,5 +24,5 @@ public interface ICommunityService
 
     Task<bool> DeleteAsync(string userId, string communityId);
     
-    Task<T?> GetCommunityDetailsByIdAsync<T>(string communityId, string userId);
+    Task<T?> GetCommunityDetailsByIdOrNameAsync<T>(string communityIdOrName, string userId);
 }

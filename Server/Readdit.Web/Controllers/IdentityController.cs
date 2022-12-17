@@ -38,12 +38,12 @@ public class IdentityController : ApiController
 
     [HttpPost]
     [Route("confirmEmail")]
-    [ProducesResponseType((int) HttpStatusCode.OK)]
-    [ProducesResponseType((int) HttpStatusCode.BadRequest)]
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.BadRequest)]
     public async Task<IActionResult> ConfirmEmailAsync(
         [FromQuery] string userId, [FromQuery] string token)
     {
         var success = await _authenticationService.ConfirmEmailAsync(userId, token);
-        return success ? Ok() : BadRequest();
+        return success.OkOrBadRequest();
     }
 }

@@ -1,10 +1,10 @@
-﻿using System.Reflection;
-using Readdit.Infrastructure.Common.Repositories;
+﻿using Readdit.Infrastructure.Common.Repositories;
 using Readdit.Infrastructure.Models;
 using Readdit.Infrastructure.Models.Enums;
 using Readdit.Services.Data.UserCommunities;
 using Readdit.Services.Data.UserCommunities.Models;
 using Readdit.Services.Mapping;
+using Readdit.Tests.Common;
 
 namespace Readdit.Tests;
 
@@ -32,8 +32,6 @@ public class UserCommunitiesServiceTests
     
     private static readonly Community CommunityOne = new()
     {
-        AdminId = AdminUser.Id,
-        Admin = AdminUser,
         Type = CommunityType.Public,
         Id = "CommunityId",
         Name = "TestCommunity", 
@@ -44,17 +42,15 @@ public class UserCommunitiesServiceTests
     
     private static readonly Community CommunityTwo = new()
     {
-        AdminId = AdminUser.Id,
-        Admin = AdminUser,
         Type = CommunityType.Public,
         Id = "CommunityId2",
-        Name = "TestCommunity", 
+        Name = "TestCommunity2", 
         Description = "Some description",
         PictureUrl = "Some Picture Url",
         PicturePublicId = "Some Picture Id"
     };
         
-    [OneTimeSetUp]
+    [SetUp]
     public void SetUp()
     {
         MappingConfiguration.RegisterMappings(typeof(MappingConfiguration).Assembly);
@@ -66,14 +62,25 @@ public class UserCommunitiesServiceTests
             _userCommunities, _users, _communities);
         
         var context = InMemoryDbContextProvider.Instance;
+        context.Database.EnsureDeleted();
         
         _users.Add(TestUser);
         _users.Add(AdminUser);
+        context.SaveChanges();
+
+        CommunityOne.Admin = AdminUser;
+        CommunityTwo.Admin = AdminUser;
         
         _communities.Add(CommunityOne);
         _communities.Add(CommunityTwo);
-
         context.SaveChanges();
+    }
+
+    [TearDown]
+    public void TearDown()
+    {
+        var context = InMemoryDbContextProvider.Instance;
+        context.Database.EnsureDeleted();
     }
 
     [Test]
@@ -108,8 +115,8 @@ public class UserCommunitiesServiceTests
             AdminId = AdminUser.Id,
             Admin = AdminUser,
             Type = CommunityType.Restricted,
-            Id = "CommunityId2",
-            Name = "TestCommunity2", 
+            Id = "CommunityId3",
+            Name = "TestCommunity3", 
             Description = "Some description2",
             PictureUrl = "Some Picture Url2",
             PicturePublicId = "Some Picture Id2"
@@ -152,7 +159,7 @@ public class UserCommunitiesServiceTests
             .GetAllByUser<UserCommunityModel>(TestUser.Id);
         
         Assert.That(communities.Count(), Is.EqualTo(2));
-        Assert.That(communities.First().Id, Is.EqualTo(CommunityOne.Id));
-        Assert.That(communities.Last().Id, Is.EqualTo(CommunityTwo.Id));
+        Assert.That(communities.First().Id, Is.EqualTo(CommunityTwo.Id));
+        Assert.That(communities.Last().Id, Is.EqualTo(CommunityOne.Id));
     }
 }

@@ -13,8 +13,8 @@ import { loginSchema } from "./validationSchema";
 import { Link, useNavigate } from "react-router-dom";
 import FormField from "../register/FormField";
 import { ApiError } from "../../api/common/ApiError";
-import { WarningIcon } from "@chakra-ui/icons";
 import { log } from "../../utils/logger";
+import ErrorMessage from "../../components/ErrorMessage";
 
 interface LoginProps {}
 
@@ -57,13 +57,7 @@ const Login: FC<LoginProps> = () => {
                      type={'password'}
                      placeholder={"Type your password ..."}
                      name={"Password"} label={"Password: "} />
-                  {isError && (
-                     <Text textAlign={'start'} color={'red'}>
-                        <span style={{marginRight: ".5rem"}}><WarningIcon color={'red'} fontSize={14} /></span>
-                        {(error as ApiError).errors[0]}
-                     </Text>
-                  )
-                  }
+                  <ErrorMessage show={isError} errorMessage={(error as ApiError)?.message} />
                   <Button
                      type={"submit"}
                      alignSelf={"flex-end"}

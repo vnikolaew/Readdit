@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Readdit.Common", "Readdit.C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SendGridTesting", "SendGridTesting\SendGridTesting.csproj", "{AFD2AF99-048E-449B-B9E0-D0A0C4FC04D1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Readdit.Tests", "Readdit.Tests\Readdit.Tests.csproj", "{1B6CDA9B-B442-45AF-8BC5-1C4EA2BB927A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{AFD2AF99-048E-449B-B9E0-D0A0C4FC04D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AFD2AF99-048E-449B-B9E0-D0A0C4FC04D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AFD2AF99-048E-449B-B9E0-D0A0C4FC04D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B6CDA9B-B442-45AF-8BC5-1C4EA2BB927A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B6CDA9B-B442-45AF-8BC5-1C4EA2BB927A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B6CDA9B-B442-45AF-8BC5-1C4EA2BB927A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B6CDA9B-B442-45AF-8BC5-1C4EA2BB927A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -6,6 +6,7 @@ using Readdit.Infrastructure.Models.Enums;
 using Readdit.Services.Data.Users;
 using Readdit.Services.External.Cloudinary;
 using Readdit.Services.External.Cloudinary.Models;
+using Readdit.Tests.Common;
 
 namespace Readdit.Tests;
 
@@ -23,8 +24,18 @@ public class UsersServiceTests
         _users = DbRepositoryProvider.Get<ApplicationUser>();
         _countries = DbRepositoryProvider.Get<Country>();
         _cloudinaryServiceMock = new Mock<ICloudinaryService>();
+        
+        var context = InMemoryDbContextProvider.Instance;
+        context.Database.EnsureDeleted();
 
         _usersService = new UsersService(_users, _cloudinaryServiceMock.Object, _countries);
+    }
+    
+    [TearDown]
+    public void TearDown()
+    {
+        var context = InMemoryDbContextProvider.Instance;
+        context.Database.EnsureDeleted();
     }
 
     [Test]
@@ -32,11 +43,11 @@ public class UsersServiceTests
     {
         const string userId = "TestId";
         
-        var context = InMemoryDbContextProvider.Instance;
-        context.Users.Add(new ApplicationUser { Id = userId, FirstName = "", LastName = ""});
-        await context.SaveChangesAsync();
+        _users.Add(new ApplicationUser { Id = userId, FirstName = "", LastName = ""});
+        await _users.SaveChangesAsync();
 
         var user = await _usersService.GetUserByIdAsync(userId);
+        
         Assert.That(userId, Is.Not.EqualTo(null));
         Assert.That(user!.Id, Is.EqualTo(userId));
     }
@@ -44,11 +55,10 @@ public class UsersServiceTests
     [Test]
     public async Task GetUserByIdAsync_ShouldFail_WithNoSuchUser()
     {
-        const string userId = "TestId";
+        const string userId = "TestId2";
         
-        var context = InMemoryDbContextProvider.Instance;
-        context.Users.Add(new ApplicationUser { Id = userId, FirstName = "", LastName = ""});
-        await context.SaveChangesAsync();
+        _users.Add(new ApplicationUser { Id = userId, FirstName = "", LastName = ""});
+        await _users.SaveChangesAsync();
 
         var user = await _usersService.GetUserByIdAsync("OtherId");
         Assert.That(user, Is.EqualTo(null));
@@ -68,7 +78,7 @@ public class UsersServiceTests
                 It.IsAny<string>()))
             .ReturnsAsync(true);
         
-        const string userId = "TestId";
+        const string userId = "TestId3";
         const string newFirstName = "John";
         const string newLastName = "Doe";
         const string newGender = "Male";
@@ -76,14 +86,13 @@ public class UsersServiceTests
         const string newCountry = "Bulgaria";
         
         var context = InMemoryDbContextProvider.Instance;
-        context.Users.Add(new ApplicationUser
+        _users.Add(new ApplicationUser
         {
             Id = userId, FirstName = "", LastName = "",
             Profile = new UserProfile{CountryId = "", ProfilePictureUrl = "PictureUrl", ProfilePicturePublicId = ""}
         });
-        context.Countries.AddRange(
-            new Country { Name = "USA", Code = "US"},
-            new Country { Name = newCountry, Code = "BG"});
+        _countries.Add(new Country { Name = "USA", Code = "US"});
+        _countries.Add(new Country { Name = newCountry, Code = "BG"});
         
         await context.SaveChangesAsync();
 
@@ -104,6 +113,7 @@ public class UsersServiceTests
         Assert.That(user.Profile.Gender, Is.EqualTo(Gender.Male));
         Assert.That(user.Profile.ProfilePictureUrl, Is.EqualTo("ImageUrl"));
         Assert.That(user.Profile.ProfilePicturePublicId, Is.EqualTo("ImageId"));
+        
         _cloudinaryServiceMock
             .Verify(cs => cs.UploadAsync(
                 It.IsAny<Stream>(),

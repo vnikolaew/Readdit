@@ -33,8 +33,8 @@ public class PostFeedService : IPostFeedService
             .AllAsNoTracking()
             .Where(p => communityIds.Contains(p.CommunityId))
             .OrderByDescending(p => p.CreatedOn)
-            .ThenByDescending(p => p.Votes.Count)
-            .To<T>()
+            .ThenByDescending(p => p.VoteScore)
+            .To<T>(new { currentUserId = userId })
             .ToListAsync();
         
         return posts;
@@ -56,9 +56,9 @@ public class PostFeedService : IPostFeedService
             .AllAsNoTracking()
             .Where(p => communityIds.Contains(p.CommunityId)
                         && p.CreatedOn > startDate)
-            .OrderByDescending(p => p.Votes.Count)
+            .OrderByDescending(p => p.VoteScore)
             .ThenByDescending(p => p.CreatedOn)
-            .To<T>()
+            .To<T>(new { currentUserId = userId })
             .ToListAsync();
         
         return posts;

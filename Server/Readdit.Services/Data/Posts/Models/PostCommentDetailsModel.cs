@@ -9,6 +9,8 @@ public class PostCommentDetailsModel : IHaveCustomMappings
 {
     public PostCommentAuthorModel Author { get; set; }
     
+    public string Id { get; set; }
+    
     public string Content { get; set; }
     
     public DateTime CreatedOn { get; set; }

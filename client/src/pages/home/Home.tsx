@@ -1,8 +1,9 @@
 import React, { FC } from "react";
-import { Box, Divider, Flex, Image, Spinner } from "@chakra-ui/react";
+import { Divider, Flex, Spinner } from "@chakra-ui/react";
 import { useCurrentUser } from "../../api/common/hooks/useCurrentUser";
 import { useGetUserDetailsQuery } from "../../api/users/hooks/useGetUserDetailsQuery";
 import CreatePostSection from "./CreatePostSection";
+import PostFeed from "./post-feed/PostFeed";
 
 const Home: FC = () => {
    const user = useCurrentUser();
@@ -13,17 +14,9 @@ const Home: FC = () => {
    }
 
    return (
-      <Flex mt={6} direction={"column"} gap={6} alignItems={"center"}>
+      <Flex mt={6} direction={"column"} gap={4} alignItems={"center"}>
          <CreatePostSection />
-         <Image
-            width={200}
-            height={200}
-            objectFit={"cover"}
-            boxShadow={"lg"}
-            borderRadius={"50%"}
-            src={userInfo.profile!.pictureUrl!}
-         />
-         <Box></Box>
+         <PostFeed />
          <Divider width={"50%"} orientation={"horizontal"} height={10} />
       </Flex>
    );

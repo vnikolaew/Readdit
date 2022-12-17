@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Readdit.Infrastructure.Common.Repositories;
 using Readdit.Infrastructure.Models;
+using Readdit.Infrastructure.Models.Enums;
 using Readdit.Services.Data.Scores;
 
 namespace Readdit.Services.Data.Comments;
@@ -54,7 +55,9 @@ public class CommentsService : ICommentsService
 
         var authorIsCommunityMember = await _userCommunities
             .AllAsNoTracking()
-            .AnyAsync(uc => uc.UserId == authorId && uc.CommunityId == post.CommunityId);
+            .AnyAsync(uc => uc.UserId == authorId
+                            && uc.CommunityId == post.CommunityId
+                            && uc.Status == UserCommunityStatus.Approved);
         if (!authorIsCommunityMember)
         {
             return null;

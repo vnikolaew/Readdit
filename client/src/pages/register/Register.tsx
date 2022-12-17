@@ -9,9 +9,9 @@ import FormField from "./FormField";
 import { allGenders, registerSchema } from "./validationSchema";
 import SelectField from "./SelectField";
 import ImageSelect from "./ImageSelect";
-import { WarningIcon } from "@chakra-ui/icons";
 import { ApiError } from "../../api/common/ApiError";
 import { log } from "../../utils/logger";
+import ErrorMessage from "../../components/ErrorMessage";
 
 const Register: FC = () => {
    const { mutateAsync, isError, error } = useRegisterMutation();
@@ -122,13 +122,7 @@ const Register: FC = () => {
                      type={"password"}
                      placeholder={"Type your password ..."}
                   />
-                  {isError && (
-                     <Text textAlign={"start"} color={"red"}>
-                        <span style={{ marginRight: ".5rem" }}><WarningIcon color={"red"} fontSize={14} /></span>
-                        {(error as ApiError).errors[0]}
-                     </Text>
-                  )
-                  }
+                  <ErrorMessage show={isError} errorMessage={(error as ApiError).errors[0]} />
                   <Button
                      type={"submit"}
                      alignSelf={"flex-end"}

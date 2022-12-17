@@ -76,7 +76,7 @@ public class CommentVotesService : ICommentVotesService
             .All()
             .FirstOrDefaultAsync(cv => cv.UserId == userId
                                        && cv.CommentId == commentId
-                                       && cv.Type == VoteType.Down);
+                                       && cv.Type == VoteType.Up);
         
         var comment = await _comments
             .All()
