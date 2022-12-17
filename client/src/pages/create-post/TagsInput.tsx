@@ -8,11 +8,13 @@ const TagsInput: FC = () => {
    const { setFieldValue, values: { Tags } } = useFormikContext<PostApiPostsBody>();
    const [tag, setTag] = useState<string>("");
 
+   const isTagEmpty = tag === "";
+
    const handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
       if (e.key !== "Enter") return;
+      e.preventDefault();
 
-      // @ts-ignore
-      const value = e.target.value;
+      const value = (e.target as any).value as string;
       if (!value.trim()) return;
 
       setFieldValue("Tags", [...Tags!, tag]);
@@ -52,9 +54,14 @@ const TagsInput: FC = () => {
          <Input borderRight={"none"} borderLeft={"none"} onKeyDown={handleKeyDown} value={tag}
                 onChange={(e) => setTag(e.target.value)}
                 px={4}
-                placeholder="Enter a tag" type={"text"} />
-         <InputRightAddon aria-disabled={tag === ""} _hover={tag !== "" ? { opacity: .7 } : {}} onClick={() => addTag()}
-                          cursor={tag === "" ? "not-allowed" : "pointer"} bgColor={"transparent"}>
+                placeholder="Enter tags"
+                type={"text"} />
+         <InputRightAddon
+            aria-disabled={tag === ""}
+            _hover={isTagEmpty ? { opacity: .7 } : {}}
+            onClick={() => addTag()}
+            cursor={isTagEmpty ? "not-allowed" : "pointer"}
+            bgColor={"transparent"}>
             <AddIcon />
          </InputRightAddon>
       </InputGroup>

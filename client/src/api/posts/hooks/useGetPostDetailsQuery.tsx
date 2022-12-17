@@ -8,15 +8,15 @@ import postsClient from "../client";
 const getPostDetails = async (postId: string) => {
    await sleep(500);
 
-   const { data, headers, status } = await postsClient.get<PostDetailsModel>(
-      `/${postId}`
+   const { data, status } = await postsClient.get<PostDetailsModel>(
+      `/${postId}`,
    );
 
    if (status !== HttpStatusCode.OK) {
       throw new ApiError((data as AuthenticationResultErrorModel).errors!);
    }
 
-   return { data, headers, status };
+   return data;
 };
 
 export const useGetPostDetailsQuery = (postId: string) => {
@@ -25,9 +25,10 @@ export const useGetPostDetailsQuery = (postId: string) => {
       ({ queryKey: [_, postId] }) => getPostDetails(postId),
       {
          onError: console.error,
-         onSuccess: ({ data }) => {},
+         onSuccess: (data) => {
+         },
          onSettled: (res) => console.log(res),
          cacheTime: 10 * 60 * 1000,
-      }
+      },
    );
 };

@@ -21,7 +21,7 @@ const createPost = async (model: PostApiPostsBody) => {
       throw new ApiError((data as AuthenticationResultErrorModel).errors!);
    }
 
-   return { data, headers, status };
+   return { data, headers };
 };
 
 export const useCreatePostMutation = () => {
