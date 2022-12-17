@@ -9,6 +9,6 @@ export type VoteType = typeof VoteType[keyof typeof VoteType];
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const VoteType = {
-   "0": 0,
-   "1": 1,
+   "0": "Up",
+   "1": "Down",
 } as const;

@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Identity;
 using Readdit.Infrastructure.Models;
 using Readdit.Services.Mapping;
 
