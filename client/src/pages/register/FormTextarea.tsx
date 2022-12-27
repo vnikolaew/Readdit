@@ -1,6 +1,6 @@
 import React from "react";
-import { FormControl, FormErrorMessage, FormLabel, Textarea, TextareaProps } from "@chakra-ui/react";
 import { FastField, FieldProps } from "formik";
+import { Input, Textarea, TextareaProps, Title } from "@mantine/core";
 
 // @ts-ignore
 interface FormFieldProps<T> extends TextareaProps {
@@ -16,11 +16,14 @@ function FormTextarea<T>({ name, label, ...rest }: FormFieldProps<T>) {
               form: { getFieldProps },
               meta: { touched, error },
            }: FieldProps<T>) => (
-            <FormControl isInvalid={touched && !!error}>
-               {label && <FormLabel fontSize={18}> {label} </FormLabel>}
-               <Textarea {...getFieldProps(name)} boxShadow={"md"} {...rest} />
-               <FormErrorMessage>{error}</FormErrorMessage>
-            </FormControl>
+            <Input.Wrapper
+               display={"flex"}
+               w={rest.w}
+               style={{ alignItems: "flex-start", gap: "10px", flexDirection: "column" }}
+               label={<Title fw={"normal"} size={"h4"}>{label}</Title>}
+               error={touched && !!error && error}>
+               <Textarea {...getFieldProps(name)} {...rest} />
+            </Input.Wrapper>
          )}
       </FastField>
    );

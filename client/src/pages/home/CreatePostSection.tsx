@@ -1,77 +1,95 @@
 import React, { FC } from "react";
-import { Avatar, AvatarBadge, Box, Button, HStack, Input } from "@chakra-ui/react";
 import { useGetUserDetailsQuery } from "../../api/users/hooks/useGetUserDetailsQuery";
 import { useCurrentUser } from "../../api/common/hooks/useCurrentUser";
 import { ArrowRightIcon } from "@chakra-ui/icons";
 import { useNavigate } from "react-router-dom";
 import { sleep } from "../../utils/sleep";
+import { Avatar, Button, Flex, Indicator, Input, useMantineTheme } from "@mantine/core";
 
 const CreatePostSection: FC = () => {
    const user = useCurrentUser();
    const navigate = useNavigate();
+   const theme = useMantineTheme();
    const { data: userInfo, isLoading } = useGetUserDetailsQuery(user?.userId);
 
    return (
-      <Box
-         borderWidth={1}
-         borderRadius={6}
-         borderColor="gray"
+      <Flex
+         style={{
+            borderWidth: 1,
+            borderRadius: 6,
+            cursor: "pointer",
+            borderColor: theme.colors.gray[9],
+         }}
+         styles={theme => ({
+            "&:hover": {
+               bgColor: theme.colors.dark[7],
+            },
+         })}
+         align={"center"}
+         direction={"row"}
          onClick={async () => {
             await sleep(1000);
             navigate("/create/post");
          }}
-         width={"550px"}
-         _active={{ bgColor: "blackAlpha.900" }}
-         py={6}
-         px={2}
-         p={2}
-         color={"white"}
-         bgColor={"blackAlpha.900"}
+         w={"550px"}
+         gap={8}
+         py={8}
+         px={6}
+         color={theme.colors.dark[0]}
+         bg={theme.colors.dark[9]}
       >
-         <HStack spacing={3}>
+         <Indicator
+            dot
+            inline
+            color="teal"
+            position="bottom-end"
+            offset={4}
+            size={10}
+         >
             <Avatar
-               borderRadius={"50%"}
-               size={"sm"}
-               objectFit={"cover"}
-               src={userInfo!.profile!.pictureUrl!}
-            >
-               <AvatarBadge
-                  borderColor={"black"}
-                  borderWidth={0.8}
-                  boxSize={".7rem"}
-                  bg={"green.500"}
-               />
-            </Avatar>
-            <Input
-               _hover={{
-                  bgColor: "blackAlpha.200",
-               }}
-               borderWidth={1}
-               borderColor={"gray"}
-               bgColor={"blackAlpha.200"}
+               radius={"xl"}
                size={"md"}
-               variant={"filled"}
-               placeholder={"Create Post"}
+               src={userInfo!.profile!.pictureUrl!}
             />
-            <Button
-               onClick={async () => {
-                  await sleep(200);
-                  navigate("/create/post");
-               }}
-               ml={20}
-               borderColor={"transparent"}
-               borderWidth={1}
-               _hover={{
-                  bgColor: "transparent",
+         </Indicator>
+         <Input
+            styles={theme => ({
+               input: {
                   borderWidth: 1,
-                  borderColor: "gray",
-               }}
-               bgColor={"transparent"}
-            >
-               <ArrowRightIcon />
-            </Button>
-         </HStack>
-      </Box>
+                  borderColor: theme.colors.gray[6],
+                  backgroundColor: theme.colors.dark[5],
+                  "&:hover": {
+                     backgroundColor: theme.colors.dark[8],
+                  },
+               },
+            })}
+            w={"70%"}
+            size={"md"}
+            variant={"filled"}
+            placeholder={"Create Post"}
+         />
+         <Button
+            onClick={async () => {
+               await sleep(200);
+               navigate("/create/post");
+            }}
+            ml={20}
+            styles={theme => ({
+               root: {
+                  borderColor: "transparent",
+                  borderWidth: 1,
+                  "&:hover": {
+                     backgroundColor: theme.colors.dark[8],
+                     borderWidth: 1,
+                     borderColor: theme.colors.gray[6],
+                  },
+               },
+            })}
+            bg={"transparent"}
+         >
+            <ArrowRightIcon />
+         </Button>
+      </Flex>
    );
 };
 

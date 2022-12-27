@@ -1,9 +1,9 @@
 import React, { FC } from "react";
-import { Avatar, Flex, Text } from "@chakra-ui/react";
 import { PostCommentDetailsModel } from "../../api/models";
-import { Link } from "react-router-dom";
+import Link from "../../components/Link";
 import moment from "moment/moment";
 import CommentVotingSection from "./CommentVotingSection";
+import { Avatar, Flex, Text, useMantineTheme } from "@mantine/core";
 
 interface IProps {
    postId: string;
@@ -11,39 +11,47 @@ interface IProps {
 }
 
 const PostComment: FC<IProps> = ({ comment, postId }) => {
+   const theme = useMantineTheme();
+
    return (
-      <Flex width={"full"} alignItems={"flex-start"}>
-         <Flex justifyContent={"flex-start"} direction={"column"}>
-            <Avatar
-               boxSize={8}
-               src={comment?.author?.profilePictureUrl!}
-               borderRadius={"full"}
-               objectFit={"cover"}
-            />
+      <Flex w={"100%"} align={"flex-start"}>
+         <Flex justify={"flex-start"} direction={"column"}>
+            <Avatar size={24} src={comment?.author?.profilePictureUrl!} radius={"lg"} />
          </Flex>
-         <Flex ml={1} flex={1} px={2} color={"white"} bgColor={"transparent"} direction={"column"}>
-            <Flex my={1} display={"flex"} alignItems={"center"} gap={1}>
-               <Text color={"gray"} fontSize={12}>
+         <Flex
+            style={{ flexGrow: 1 }}
+            ml={1}
+            px={8}
+            color={theme.colors.gray[0]}
+            gap={6}
+            bg={"transparent"}
+            direction={"column"}
+         >
+            <Flex my={1} align={"center"} gap={1}>
+               <Text color={theme.colors.gray[6]} fz={12}>
                   <Link to={`/user/${comment.author!.id}`}>
-                     <Text pr={2} color={"white"} fontSize={14} display={"inline"}
-                           _hover={{ textDecoration: "underline" }}>
+                     <Text span pr={8} color={theme.colors.dark[0]} fz={14}>
                         {comment.author?.userName!}
                      </Text>
                   </Link>
-                  <Text display={"inline"} fontSize={14}>
+                  <Text span fz={14}>
                      ·
                   </Text>
-                  <Text px={2} display={"inline"}>
+                  <Text span px={8}>
                      {moment(Date.parse(comment!.createdOn!)).fromNow()}
                   </Text>
                </Text>
             </Flex>
-            <Text textAlign={"start"} fontSize={14}>{comment.content!}</Text>
+            <Text color={theme.colors.gray[0]} ta={"start"} fz={14}>
+               {comment.content!}
+            </Text>
             <CommentVotingSection
                postId={postId}
                userVote={comment.userVote!}
                commentId={comment.id!}
-               voteScore={comment.voteScore!} orientation={"horizontal"} />
+               voteScore={comment.voteScore!}
+               orientation={"horizontal"}
+            />
          </Flex>
       </Flex>
    );

@@ -1,28 +1,31 @@
+import { Divider, Flex, Title, useMantineTheme } from "@mantine/core";
 import React, { FC } from "react";
-import { Divider, Flex, Heading } from "@chakra-ui/react";
 import CreatePostForm from "./CreatePostForm";
 
 const CreatePost: FC = () => {
+   const theme = useMantineTheme();
+
    return (
       <Flex
-         alignItems={"flex-start"}
+         align={"flex-start"}
          direction={"column"}
-         width={"50%"}
-         mt={6}
+         w={"50%"}
+         mt={24}
          mx={"auto"}
       >
-         <Heading
-            fontSize={24}
-            fontWeight={"semibold"}
-            color={"blackAlpha.800"}
+         <Title
+            fz={32}
+            fw={"bold"}
+            color={theme.colors.dark[8]}
          >
             Create a Post
-         </Heading>
+         </Title>
          <Divider
-            my={2}
+            my={12}
+            size={12}
+            variant={"dashed"}
             orientation={"horizontal"}
-            h={3}
-            color={"blackAlpha.900"}
+            color={theme.colors.dark[7]}
          />
          <CreatePostForm />
       </Flex>

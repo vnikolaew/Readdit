@@ -1,5 +1,5 @@
+import { Button, useMantineTheme } from "@mantine/core";
 import React, { FC, PropsWithChildren } from "react";
-import { Button } from "@chakra-ui/react";
 import { IconType } from "react-icons";
 
 interface IProps extends PropsWithChildren {
@@ -9,11 +9,21 @@ interface IProps extends PropsWithChildren {
 }
 
 const FeedType: FC<IProps> = ({ isActive, Icon, children, onClick }) => {
+   const theme = useMantineTheme();
    return (
-      <Button onClick={onClick} borderRadius={"full"} _hover={{ bgColor: "whiteAlpha.100" }}
-              bgColor={isActive ? "whiteAlpha.100" : "transparent"}
-              color={isActive ? "white" : "gray"}
-              leftIcon={<Icon size={14} color={isActive ? "white" : "gray"} />}>
+      <Button onClick={onClick}
+              radius={"lg"}
+              variant={"default"}
+              sx={theme => ({
+                 border: "none",
+                 transitionDuration: "100ms",
+                 color: isActive ? theme.colors.gray[0] : theme.colors.gray[6],
+                 backgroundColor: isActive ? theme.colors.gray[8] : "transparent",
+                 "&:hover": {
+                    backgroundColor: theme.colors.gray[7],
+                 },
+              })}
+              leftIcon={<Icon size={16} color={isActive ? theme.colors.gray[0] : theme.colors.gray[6]} />}>
          {children}
       </Button>
    );

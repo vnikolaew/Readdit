@@ -29,7 +29,7 @@ public class CommunitiesController : ApiController
 
         return community is null
             ? BadRequest()
-            : CreatedAtAction(nameof(Details), new { communityId = community.Id }, community);
+            : CreatedAtAction(nameof(Details), new { communityIdOrName = community.Id }, community);
     }
     
     [HttpGet]

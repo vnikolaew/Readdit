@@ -1,5 +1,4 @@
 import React, { FC } from "react";
-import { Box, Button, Divider, Flex, Spinner, Text } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useGetPostDetailsQuery } from "../../api/posts/hooks/useGetPostDetailsQuery";
 import { log } from "../../utils/logger";
@@ -9,57 +8,93 @@ import { shorten } from "../../utils/string";
 import FeedPost from "../home/feed-post/FeedPost";
 import { CloseIcon } from "@chakra-ui/icons";
 import CommentsSection from "./CommentsSection";
+import { Box, Button, Center, Divider, Flex, Loader, Text, useMantineTheme } from "@mantine/core";
 
 const PostDetails: FC = () => {
    const { postId } = useParams();
    const navigate = useNavigate();
-   const { data: post, isLoading, isError, error } = useGetPostDetailsQuery(postId!);
+   const theme = useMantineTheme();
+   const { data: post, isLoading } = useGetPostDetailsQuery(postId!);
 
    if (isLoading || !post) {
-      return <Spinner size={"md"} colorScheme={"twitter"} />;
+      return (
+         <Center w={"100%"}>
+            <Loader size={"md"} color={theme.colors.blue[4]} />
+         </Center>
+      );
    }
 
    log(post);
    return (
-      <Box width={"70%"} mx={"auto"}>
-         <Flex mx={"auto"} alignItems={"center"} direction={"column"} gap={6}>
+      <Box mb={24} w={"70%"} mx={"auto"}>
+         <Flex w={"100%"} mx={"auto"} align={"center"} direction={"column"} gap={12}>
             <Flex
-               bgColor={"blackAlpha.900"}
-               position={"sticky"}
+               bg={theme.colors.dark[9]}
+               style={{
+                  position: "sticky",
+                  zIndex: 100,
+                  borderBottomLeftRadius: 6,
+                  borderBottomRightRadius: 6,
+               }}
                top={-1}
-               justifyContent={"center"}
-               borderBottomRadius={6}
-               boxShadow={"md"}
-               p={3}
-               px={10}
-               width={"full"}
-               gap={1}
-               alignItems={"center"}>
-               <Divider height={4} color={"black"} orientation={"vertical"} />
+               justify={"center"}
+               py={8}
+               px={22}
+               w={"100%"}
+               gap={6}
+               align={"center"}
+            >
+               <Divider
+                  my={"auto"}
+                  size={"sm"}
+                  h={16}
+                  color={theme.colors.dark[6]}
+                  orientation={"vertical"}
+               />
                <VotingSection
                   userVote={post.userVote!}
                   postId={post.id!}
-                  bgColor={"transparent"}
+                  bg={"transparent"}
+                  gap={4}
                   color={"white"}
                   voteScore={post.voteScore!}
-                  orientation={"horizontal"} />
-               <Divider height={4} color={"blackAlpha.900"} orientation={"vertical"} />
+                  orientation={"horizontal"}
+               />
+               <Divider
+                  my={"auto"}
+                  size={"sm"}
+                  h={16}
+                  color={theme.colors.dark[6]}
+                  orientation={"vertical"}
+               />
                {post.mediaUrl && (
-                  <Box mx={3}>
+                  <Box mx={8}>
                      <ImImage size={16} color={"white"} />
                   </Box>
                )}
-               <Text color={"white"}>{shorten(post.title!, 50)}</Text>
+               <Text color={theme.colors.gray[0]}>{shorten(post.title!, 50)}</Text>
                <Button
                   ml={"auto"}
-                  _hover={{}}
+                  radius={"lg"}
+                  styles={(theme) => ({
+                     root: {
+                        borderColor: "transparent",
+                        "&:hover": {
+                           backgroundColor: theme.colors.dark[6],
+                        },
+                        transitionDuration: "200ms",
+                     },
+                  })}
+                  bg={"transparent"}
                   onClick={() => navigate(-1)}
-                  fontSize={12} bgColor={"transparent"} color={"white"}
-                  leftIcon={<CloseIcon boxSize={3} color={"white"} />}>
+                  fz={12}
+                  color={theme.colors.gray[0]}
+                  leftIcon={<CloseIcon boxSize={10} color={theme.colors.gray[0]} />}
+               >
                   Close
                </Button>
             </Flex>
-            <FeedPost _hover={{}} width={"600px"} post={{ ...post, commentsCount: post.comments!.length }} />
+            <FeedPost w={"600px"} post={{ ...post, commentsCount: post.comments!.length }} />
             <CommentsSection postId={post.id!} comments={post.comments!} />
          </Flex>
       </Box>

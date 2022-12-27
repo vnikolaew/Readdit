@@ -1,48 +1,46 @@
-import React, { FC } from "react";
-import CommunitySelectDropdown from "./CommunitySelectDropdown";
 import { Form, Formik } from "formik";
-import { PostApiPostsBody } from "../../api/models";
+import React, { FC } from "react";
+import { useNavigate } from "react-router-dom";
+import { PostApiCommunitiesBody } from "../../api/models";
+import { useCreateCommunityMutation } from "../../api/communities";
 import { log } from "../../utils/logger";
-import { validationSchema } from "./validationSchema";
 import FormField from "../register/FormField";
 import FormTextarea from "../register/FormTextarea";
 import ImageSelect from "../register/ImageSelect";
-import TagsInput from "./TagsInput";
-import { useCreatePostMutation } from "../../api/posts/hooks/useCreatePostMutation";
-import { useNavigate } from "react-router-dom";
-import { sleep } from "../../utils/sleep";
-import ErrorMessage from "../../components/ErrorMessage";
 import { ApiError } from "../../api/common/ApiError";
-import { Button, Flex, Loader, Text, Title as MTitle, useMantineTheme } from "@mantine/core";
+import TagsInput from "../create-post/TagsInput";
+import ErrorMessage from "../../components/ErrorMessage";
+import { validationSchema } from "./validationSchema";
+import CommunityTypeSelector from "./CommunityTypeSelector";
+import { Button, Flex, Loader, Text, Title, useMantineTheme } from "@mantine/core";
 import { showNotification } from "@mantine/notifications";
 
-const CreatePostForm: FC = () => {
-   const { mutateAsync: createPostAsync, error, isError } = useCreatePostMutation();
+const CreateCommunityForm: FC = () => {
+   const { mutateAsync: createCommunityAsync, error, isError } = useCreateCommunityMutation();
    const theme = useMantineTheme();
    const navigate = useNavigate();
 
    return (
-      <Formik<PostApiPostsBody>
+      <Formik<PostApiCommunitiesBody>
          initialValues={{
-            CommunityId: null!,
-            Content: "",
-            Media: null!,
+            Name: ""!,
+            Description: "",
+            Picture: null!,
             Tags: [],
-            Title: "",
+            Type: 1,
          }}
          validationSchema={validationSchema}
          onSubmit={async (values, { setSubmitting, resetForm }) => {
             log(values);
             try {
-               const response = await createPostAsync(values);
+               const response = await createCommunityAsync(values);
                showNotification({
-                  title: "Post created.",
-                  message: "Post has been successfully created.",
+                  title: "Community created.",
+                  message: `Community ${values.Name} has been successfully created.`,
                   color: theme.colors.green[3],
                   autoClose: 3000,
                   disallowClose: false,
                });
-               await sleep(1000);
 
                setSubmitting(false);
                resetForm();
@@ -50,11 +48,11 @@ const CreatePostForm: FC = () => {
                navigate("/");
             } catch (e) {
                showNotification({
-                  title: "Something went wrong.",
-                  message: "Post could not be created.",
                   color: theme.colors.red[3],
                   autoClose: 3000,
                   disallowClose: false,
+                  title: "Something went wrong.",
+                  message: "Community could not be created.",
                });
             }
          }}
@@ -62,60 +60,58 @@ const CreatePostForm: FC = () => {
          {({
             handleSubmit,
             isSubmitting,
-            values: { Title, Content },
-            errors: { Title: titleError, Content: contentError },
+            values: { Name, Description },
+            errors: { Name: nameError, Description: descriptionError },
          }) => (
             <Form onSubmit={handleSubmit} style={{ width: "100%" }}>
-               <Flex w={"100%"} my={10} gap={24} direction={"column"} align={"flex-start"}>
-                  <CommunitySelectDropdown />
-                  <FormField<PostApiPostsBody>
-                     w={"100%"}
-                     rightSectionWidth={80}
+               <Flex my={10} gap={36} direction={"column"} align={"flex-start"}>
+                  <FormField<PostApiCommunitiesBody>
+                     placeholder={"Title"}
+                     name={"Name"}
+                     w={"80%"}
+                     rightSectionWidth={60}
                      rightSection={
                         <Text
-                           sx={{
-                              alignSelf: "flex-start",
-                           }}
-                           fw={titleError ? "semibold" : "medium"}
+                           fw={nameError ? "bold" : "normal"}
                            fz={12}
-                           my={8}
-                           color={titleError ? "red" : "gray"}
+                           w={"50px"}
+                           color={nameError ? theme.colors.red[6] : theme.colors.gray[3]}
                            mr={3}
                         >
-                           {Title.length} / 200
+                           {Name.length} / 200
                         </Text>
                      }
-                     placeholder={"Title"}
-                     name={"Title"}
-                     label={"Title"}
+                     label={"Name"}
                   />
-                  <FormTextarea<PostApiPostsBody>
-                     w={"100%"}
-                     rightSectionWidth={80}
+                  <FormTextarea<PostApiCommunitiesBody>
+                     placeholder={"Content (required)"}
+                     name={"Description"}
+                     rightSectionWidth={60}
                      autosize
+                     w={"80%"}
                      rightSection={
                         <Text
+                           fw={descriptionError ? "bold" : "normal"}
+                           my={14}
                            sx={{
                               alignSelf: "flex-start",
                            }}
-                           fw={contentError ? "semibold" : "medium"}
                            fz={12}
-                           color={contentError ? "red" : "gray"}
-                           my={14}
-                           mr={8}
+                           w={"50px"}
+                           color={descriptionError ? theme.colors.red[6] : theme.colors.gray[6]}
+                           mr={3}
                         >
-                           {Content.length} / 200
+                           {Description.length} / 200
                         </Text>
                      }
-                     placeholder={"Content (required)"}
-                     name={"Content"}
-                     label={"Content"}
+                     label={"Description"}
                   />
                   <TagsInput />
-                  <MTitle key={1} mt={2} fw={"medium"} fz={20}>
+                  <CommunityTypeSelector />
+                  <Title mt={2} fw={"normal"} fz={20}>
                      Select an image:
-                  </MTitle>
-                  <ImageSelect name={"Media"} />
+                  </Title>
+                  <ImageSelect name={"Picture"} />
                   <ErrorMessage show={isError} errorMessage={(error as ApiError)?.message} />
                   <Button
                      fz={20}
@@ -125,7 +121,6 @@ const CreatePostForm: FC = () => {
                      loaderProps={<Loader color={theme.colors.gray[0]} size={"md"} />}
                      px={50}
                      size={"md"}
-                     // py={8}
                      sx={{
                         alignSelf: "flex-end",
                         boxShadow: theme.shadows.md,
@@ -135,7 +130,7 @@ const CreatePostForm: FC = () => {
                      variant={"default"}
                      type={"submit"}
                   >
-                     {!isSubmitting && "Post"}
+                     {!isSubmitting && "Create"}
                   </Button>
                </Flex>
             </Form>
@@ -144,4 +139,4 @@ const CreatePostForm: FC = () => {
    );
 };
 
-export default CreatePostForm;
+export default CreateCommunityForm;

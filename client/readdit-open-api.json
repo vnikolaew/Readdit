@@ -12,32 +12,24 @@
         ],
         "requestBody": {
           "content": {
-            "multipart/form-data": {
+            "application/json-patch+json": {
               "schema": {
-                "required": [
-                  "Content",
-                  "PostId"
-                ],
-                "type": "object",
-                "properties": {
-                  "PostId": {
-                    "title": "String",
-                    "type": "string"
-                  },
-                  "Content": {
-                    "title": "String",
-                    "maxLength": 1000,
-                    "type": "string"
-                  }
-                }
-              },
-              "encoding": {
-                "PostId": {
-                  "style": "form"
-                },
-                "Content": {
-                  "style": "form"
-                }
+                "$ref": "#/components/schemas/CreateCommentInputModel"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCommentInputModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCommentInputModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCommentInputModel"
               }
             }
           }
@@ -1489,6 +1481,58 @@
         }
       }
     },
+    "/api/Posts/user/{communityId}": {
+      "get": {
+        "tags": [
+          "Posts"
+        ],
+        "parameters": [
+          {
+            "name": "communityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "title": "String",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "title": "IEnumerable`1",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CommunityPostModel"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "title": "IEnumerable`1",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CommunityPostModel"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "title": "IEnumerable`1",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CommunityPostModel"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/PostVotes/up/{postId}": {
       "post": {
         "tags": [
@@ -2023,7 +2067,7 @@
         }
       }
     },
-    "/api/UserCommunities/{communityId}": {
+    "/api/UserCommunities/relationship/{communityId}": {
       "get": {
         "tags": [
           "UserCommunities"
@@ -3049,6 +3093,28 @@
         },
         "additionalProperties": false
       },
+      "CreateCommentInputModel": {
+        "title": "CreateCommentInputModel",
+        "required": [
+          "content",
+          "postId"
+        ],
+        "type": "object",
+        "properties": {
+          "postId": {
+            "title": "String",
+            "minLength": 1,
+            "type": "string"
+          },
+          "content": {
+            "title": "String",
+            "maxLength": 1000,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
       "FeedCommunityModel": {
         "title": "FeedCommunityModel",
         "type": "object",
@@ -3311,6 +3377,11 @@
         "properties": {
           "author": {
             "$ref": "#/components/schemas/PostCommentAuthorModel"
+          },
+          "id": {
+            "title": "String",
+            "type": "string",
+            "nullable": true
           },
           "content": {
             "title": "String",
@@ -3800,6 +3871,11 @@
             "title": "String",
             "type": "string",
             "nullable": true
+          },
+          "membersCount": {
+            "title": "Int32",
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false

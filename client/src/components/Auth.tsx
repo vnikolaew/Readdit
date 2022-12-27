@@ -8,7 +8,7 @@ interface AuthProps extends PropsWithChildren {
 
 const Auth: FC<AuthProps> = ({ children, redirectTo }) => {
    const user = useCurrentUser();
-   if (user === null || user === undefined) {
+   if (!user) {
       return <Navigate to={redirectTo} />;
    }
 

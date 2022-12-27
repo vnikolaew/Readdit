@@ -1,6 +1,5 @@
 import React, { FC } from "react";
 import { Link, useParams } from "react-router-dom";
-import { Avatar, Box, Divider, Flex, Heading, HStack, Image, Spinner, Text, VStack } from "@chakra-ui/react";
 import { useGetUserDetailsQuery } from "../../api/users/hooks/useGetUserDetailsQuery";
 import { useGetAllPostsByUserQuery } from "../../api/posts/hooks/useGetAllPostsByUserQuery";
 import moment from "moment/moment";
@@ -9,106 +8,174 @@ import { BsFillFilePostFill } from "react-icons/bs";
 import { FaComment } from "react-icons/fa";
 import FeedPost from "../home/feed-post/FeedPost";
 import PostSkeleton from "../../components/PostSkeleton";
+import {
+   Avatar,
+   Box,
+   Divider,
+   Flex,
+   Group,
+   Image,
+   Loader,
+   Text,
+   Title,
+   useMantineTheme,
+} from "@mantine/core";
 
 const UserDetails: FC = () => {
    const { userId } = useParams();
-   const { data: user, isError, isLoading } = useGetUserDetailsQuery(userId);
-   const { data: userPosts, isLoading: arePostsLoading } = useGetAllPostsByUserQuery(userId);
+   const theme = useMantineTheme();
+   const { data: user, isLoading } = useGetUserDetailsQuery(userId);
+   const { data: userPosts, isLoading: arePostsLoading } =
+      useGetAllPostsByUserQuery(userId);
 
    if (isLoading || !user) {
-      return <Spinner colorScheme={"facebook"} size={"md"} />;
+      return <Loader color={theme.colors.blue[9]} size={"md"} />;
    }
 
    return (
       <Box>
          <Flex
-            px={20}
-            position={"relative"}
-            justifyContent={"flex-start"}
-            alignItems={"flex-end"}
+            px={60}
+            sx={{ position: "relative" }}
+            justify={"flex-start"}
+            align={"flex-end"}
             gap={4}
-            bgColor={"blackAlpha.700"}
-            height={150}>
+            bg={theme.colors.dark[6]}
+            h={150}
+         >
             <Avatar
-               borderRadius={"50%"}
-               borderWidth={3}
-               borderColor={"white"}
-               boxSize={140}
-               position={"absolute"}
-               objectFit={"cover"}
-               bottom={"-30%"}
-               src={user.profile!.pictureUrl!} />
-            <Flex alignItems={"flex-start"} direction={"column"} ml={160} gap={1}>
-               <Heading
-                  fontWeight={"medium"}
-                  color={"white"}
-                  fontSize={24}>
+               sx={(theme) => ({
+                  borderWidth: 3,
+                  borderRadius: "50%",
+                  borderColor: theme.colors.gray[0],
+                  position: "absolute",
+                  bottom: "-40%",
+               })}
+               h={150}
+               w={150}
+               src={user.profile!.pictureUrl!}
+            />
+            <Flex align={"flex-start"} direction={"column"} ml={180} gap={1}>
+               <Title fw={"normal"} color={theme.colors.gray[0]} fz={24}>
                   {user.firstName} {user.lastName}
-               </Heading>
+               </Title>
                <Text
-                  fontWeight={"medium"}
+                  fw={"normal"}
                   display={"inline"}
                   px={1}
-                  textAlign={"left"}
-                  color={"black"}
-                  fontSize={16}>
-                  u/{user.userName!}{"   "}
-                  <Text px={2} display={"inline"}>
+                  ta={"left"}
+                  color={theme.colors.dark[2]}
+                  fz={14}
+               >
+                  u/{user.userName!}
+                  {"   "}
+                  <Text span px={6}>
                      ·
                   </Text>
-                  <Text display={"inline"}>
+                  <Text span>
                      Joined {moment(Date.parse(user!.createdOn!)).fromNow()}
                   </Text>
                </Text>
-               <HStack mb={2} spacing={4}>
-                  <Text fontSize={16} color={user.profile!.gender === "Male" ? "blue.500" : "pink"} pl={1}>
+               <Group my={4} spacing={12}>
+                  <Text
+                     fz={18}
+                     color={
+                        user.profile!.gender === "Male"
+                           ? theme.colors.blue[9]
+                           : theme.colors.pink[9]
+                     }
+                     pl={1}
+                  >
                      {user.profile!.gender}
                   </Text>
-                  <Text display={"inline"}>
+                  <Text color={theme.colors.dark[0]} span>
                      ·
                   </Text>
-                  <Image width={6}
-                         src={`https://flagcdn.com/256x192/${user.profile!.countryCode!.toLowerCase()}.png`}
-                  />
-               </HStack>
+                  <Box>
+                     <Image
+                        height={16}
+                        src={`https://flagcdn.com/256x192/${user.profile!.countryCode!.toLowerCase()}.png`}
+                     />
+                  </Box>
+               </Group>
             </Flex>
-            <HStack mx={6} mb={4} spacing={6}>
-               <Flex color={"white"} alignItems={"flex-end"} direction={"column"} gap={.5}>
-                  <Text fontSize={16} textAlign={"end"}>Posts Score</Text>
-                  <HStack color={getColorByScore(user.postsScore!)} spacing={1}>
-                     <BsFillFilePostFill />
-                     <Text fontWeight={"bold"} color={getColorByScore(user.postsScore!)} fontSize={14}
-                           textAlign={"end"}>
+            <Group mx={48} mb={36} spacing={36}>
+               <Flex
+                  color={theme.colors.gray[0]}
+                  align={"flex-end"}
+                  direction={"column"}
+                  gap={0.5}
+               >
+                  <Text color={theme.colors.gray[0]} fz={16} ta={"end"}>
+                     Posts Score
+                  </Text>
+                  <Group spacing={4}>
+                     <BsFillFilePostFill
+                        color={getColorByScore(user.postsScore!, theme)}
+                     />
+                     <Text
+                        fw={"bold"}
+                        color={getColorByScore(user.postsScore!, theme)}
+                        fz={14}
+                        ta={"end"}
+                     >
                         {user.postsScore}
                      </Text>
-                  </HStack>
+                  </Group>
                </Flex>
-               <Flex color={"white"} alignItems={"flex-end"} direction={"column"} gap={.5}>
-                  <Text fontSize={16} textAlign={"end"}>Comments Score</Text>
-                  <HStack color={getColorByScore(user.postsScore!)} spacing={1}>
-                     <FaComment />
-                     <Text fontWeight={"bold"} color={getColorByScore(user.commentsScore!)} fontSize={14}
-                           textAlign={"end"}>
+               <Flex
+                  color={theme.colors.gray[0]}
+                  align={"flex-end"}
+                  direction={"column"}
+                  gap={0.5}
+               >
+                  <Text color={theme.colors.gray[0]} fz={16} ta={"end"}>
+                     Comments Score
+                  </Text>
+                  <Group spacing={4}>
+                     <FaComment
+                        color={getColorByScore(user.commentsScore!, theme)}
+                     />
+                     <Text
+                        fw={"bold"}
+                        color={getColorByScore(user.commentsScore!, theme)}
+                        fz={14}
+                        ta={"end"}
+                     >
                         {user.commentsScore}
                      </Text>
-                  </HStack>
+                  </Group>
                </Flex>
-            </HStack>
+            </Group>
          </Flex>
-         <VStack mt={10} spacing={4}>
-            <Heading>All Posts</Heading>
-            <Divider width={"40%"} color={"black"} orientation={"horizontal"} />
-            {arePostsLoading && Array.from({ length: 4 }).map((_, index) => (
-               <PostSkeleton key={index} />
-            ))}
-            {!arePostsLoading && userPosts &&
+         <Flex
+            align={"center"}
+            w={"100%"}
+            direction={"column"}
+            mx={"auto"}
+            mt={10}
+            gap={16}
+         >
+            <Title>All Posts</Title>
+            <Divider
+               w={"40%"}
+               color={theme.colors.dark[9]}
+               orientation={"horizontal"}
+            />
+            <Box w={"40%"}>
+               {arePostsLoading &&
+                  Array.from({ length: 4 }).map((_, index) => (
+                     <PostSkeleton key={index} />
+                  ))}
+            </Box>
+            {!arePostsLoading &&
+               userPosts &&
                userPosts?.map((post, index) => (
                   <Link to={`/post/${post.id!}`}>
                      <FeedPost key={post.id ?? index} post={post} />
                   </Link>
-               ))
-            }
-         </VStack>
+               ))}
+         </Flex>
       </Box>
    );
 };

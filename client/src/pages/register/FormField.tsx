@@ -1,9 +1,9 @@
 import React from "react";
 import { FastField, FieldProps } from "formik";
-import { FormControl, FormErrorMessage, FormLabel, Input, InputProps } from "@chakra-ui/react";
+import { Input, TextInput, TextInputProps, Title } from "@mantine/core";
 
 // @ts-ignore
-interface FormFieldProps<T> extends InputProps {
+interface FormFieldProps<T> extends TextInputProps {
    name: keyof T;
    label?: string | null;
 }
@@ -16,11 +16,16 @@ function FormField<T>({ name, label, ...rest }: FormFieldProps<T>) {
               form: { getFieldProps },
               meta: { touched, error },
            }: FieldProps<T>) => (
-            <FormControl isInvalid={touched && !!error}>
-               {label && <FormLabel fontSize={18}> {label} </FormLabel>}
-               <Input {...getFieldProps(name)} boxShadow={"md"} {...rest} />
-               <FormErrorMessage>{error}</FormErrorMessage>
-            </FormControl>
+            <Input.Wrapper
+               display={"flex"}
+               w={rest.w}
+               style={{ alignItems: "flex-start", gap: "10px", flexDirection: "column" }}
+               label={<Title fw={"normal"} size={"h4"}>{label}</Title>}
+               error={touched && !!error && error}>
+               <TextInput
+                  w={"100%"}
+                  {...getFieldProps(name)} {...rest} />
+            </Input.Wrapper>
          )}
       </FastField>
    );

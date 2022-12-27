@@ -1,19 +1,18 @@
 import React, { FC } from "react";
 import { useParams } from "react-router-dom";
 import { useGetCommunityDetailsQuery } from "../../api/communities";
-import { Box, Flex, Spinner } from "@chakra-ui/react";
+import { Box, Flex, Loader } from "@mantine/core";
 
 const Community: FC = () => {
    const { communityName } = useParams();
-   const { data: communityDetails, isLoading } =
-      useGetCommunityDetailsQuery(communityName);
+   const { data: communityDetails, isLoading } = useGetCommunityDetailsQuery(communityName);
 
    return (
       <Flex>
          <Box>Welcome to {communityName}!</Box>
          {isLoading ? (
             <Box>
-               <Spinner size={"md"} />
+               <Loader size={"md"} />
             </Box>
          ) : (
             <Box>{JSON.stringify(communityDetails, null, 2)}</Box>

@@ -1,24 +1,42 @@
 import React, { PropsWithChildren } from "react";
 import {
-   Select as ChakraSelect,
-   SelectProps as ChakraSelectProps,
-} from "@chakra-ui/react";
+   Select as MantineSelect,
+   SelectProps as MSelectProps,
+} from "@mantine/core";
 import { Field, FieldProps } from "formik";
 
-export interface SelectProps<T> extends PropsWithChildren, ChakraSelectProps {
-   onChange?: React.ChangeEventHandler<HTMLSelectElement>;
+export interface SelectProps<T>
+   extends PropsWithChildren,
+      Partial<MSelectProps> {
    options: T[];
+   getName?: (item: T) => string;
    name: string;
-   renderOption: (option: T, index: number) => JSX.Element;
 }
 
-function Select<T>({ onChange, options, name, renderOption, ...rest }: SelectProps<T>): JSX.Element {
+function Select<T>({
+   options,
+   name,
+   getName = (x) => x as string,
+   ...rest
+}: SelectProps<T>): JSX.Element {
+   // @ts-ignore
    return (
       <Field name={name}>
-         {({ field: { name, value }, form: {setFieldValue}}: FieldProps<string>) => (
-            <ChakraSelect value={value} onChange={e => setFieldValue(name, e.target.value)} fontSize={14} {...rest}>
-         {options.map(renderOption)}
-      </ChakraSelect>
+         {({
+            field: { name, value },
+            form: { setFieldValue },
+         }: FieldProps<string>) => (
+            <MantineSelect
+               data={options.map((o) => ({
+                  value: getName(o),
+                  label: getName(o),
+               }))}
+               searchable
+               size={"sm"}
+               value={value as string}
+               onChange={(value) => setFieldValue(name, value)}
+               {...rest}
+            />
          )}
       </Field>
    );

@@ -1,14 +1,15 @@
 import React, { FC } from "react";
-import { Box, BoxProps, SkeletonCircle, SkeletonText } from "@chakra-ui/react";
+import { BoxProps, Group, Skeleton } from "@mantine/core";
 
 const PostSkeleton: FC<BoxProps> = (props) => {
    return (
-      <Box mb={3} padding="6" boxShadow="lg" bg="white" {...props}>
-         <SkeletonCircle size="10" />
-         <SkeletonText
-            width={"500px"}
-            mt="4" noOfLines={4} spacing="4" skeletonHeight="2" />
-      </Box>
+      <Group w={"100%"} mb={3} p="6" bg={"transparent"} {...props}>
+         <Skeleton width={"100%"} height={50} circle />
+         <Skeleton width={"100%"} height={8} radius="xl" />
+         <Skeleton width={"100%"} height={8} mt={6} radius="xl" />
+         <Skeleton width={"100%"} height={8} mt={6} radius="xl" />
+         <Skeleton height={8} mt={6} width="70%" radius="xl" />
+      </Group>
    );
 };
 

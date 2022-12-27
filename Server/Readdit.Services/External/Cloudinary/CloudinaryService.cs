@@ -54,8 +54,8 @@ public class CloudinaryService : ICloudinaryService
         
         return new ImageUploadResult
         {
-            AbsoluteImageUrl = uploadResult.SecureUrl.AbsoluteUri,
-            ImagePublidId = uploadResult.PublicId
+            AbsoluteImageUrl = uploadResult.SecureUrl?.AbsoluteUri ?? string.Empty,
+            ImagePublidId = uploadResult.PublicId ?? string.Empty
         };
     }
 

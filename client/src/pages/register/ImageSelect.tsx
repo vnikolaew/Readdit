@@ -1,8 +1,15 @@
 import React, { FC, useEffect, useRef, useState } from "react";
-import { Box, Flex, IconButton, Image, Input, Text } from "@chakra-ui/react";
 import { useFormikContext } from "formik";
 import { CloseIcon } from "@chakra-ui/icons";
-import { log } from "../../utils/logger";
+import {
+   ActionIcon,
+   Box,
+   FileInput,
+   Flex,
+   Image,
+   Text,
+   useMantineTheme,
+} from "@mantine/core";
 
 interface ImageSelectProps {
    name: string;
@@ -12,21 +19,18 @@ const ImageSelect: FC<ImageSelectProps> = ({ name }) => {
    const { setFieldValue } = useFormikContext();
    const [image, setImage] = useState<File | null>(null);
    const fileRef = useRef<HTMLInputElement | null>();
+   const theme = useMantineTheme();
    const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>();
 
    const handleUnselectFile = () => {
       setImage(null);
+      setImagePreviewUrl(null);
       setFieldValue(name, null!);
    };
 
-   const onFileChange: React.ChangeEventHandler<HTMLInputElement>
-      = ({ target: { files } }) => {
-      const image = files?.[0];
-      if (!image) return;
-
-      setImage(image);
-      setFieldValue(name, image);
-      log(image);
+   const onFileChange: (payload: File | null) => void = (payload) => {
+      setImage(payload);
+      setFieldValue(name, payload);
    };
 
    useEffect(() => {
@@ -43,68 +47,81 @@ const ImageSelect: FC<ImageSelectProps> = ({ name }) => {
 
    return (
       <Flex
-         width={230}
-         minHeight={100}
-         bgColor={"gray.200"}
-         cursor={"pointer"}
-         alignItems={"center"}
-         justifyContent={"center"}
-         borderRadius={12}
-         borderWidth={5}
-         paddingBlock={2}
-         boxShadow={"xl"}
+         w={230}
+         sx={{
+            minHeight: 100,
+            cursor: "pointer",
+            borderRadius: 12,
+            borderWidth: 5,
+            paddingBlock: 2,
+         }}
+         bg={theme.colors.gray[2]}
+         align={"center"}
+         justify={"center"}
       >
          {imagePreviewUrl ? (
-            <Box boxShadow={"lg"} position={"relative"} borderRadius={8}>
+            <Box
+               sx={{
+                  position: "relative",
+                  borderRadius: 8,
+               }}
+            >
                <Image
+                  w={"100%"}
                   alt="Select an image"
-                  objectFit={"cover"}
-                  cursor={"pointer"}
-                  borderRadius={5}
-                  boxShadow={"lg"}
+                  radius={"md"}
+                  fit={"cover"}
+                  sx={{
+                     cursor: "pointer",
+                     borderRadius: 5,
+                  }}
                   onClick={() => fileRef.current?.click()}
                   src={imagePreviewUrl}
                />
-               <IconButton
-                  position={"absolute"}
-                  bgColor={"gray"}
-                  _hover={{ opacity: 0.8 }}
-                  top={2}
-                  left={2}
-                  size={"xs"}
-                  borderRadius={5}
-                  icon={
-                     <CloseIcon fontSize={12} color={"black"} />
-                  }
+               <ActionIcon
+                  sx={{
+                     position: "absolute",
+                     padding: 4,
+                     top: 8,
+                     left: 8,
+                     "&:hover": {
+                        opacity: 0.8,
+                     },
+                  }}
+                  radius={"md"}
                   onClick={handleUnselectFile}
                   aria-label={"Unselect logo"}
-               />
+                  size={"xs"}
+                  bg={"transparent"}
+               >
+                  <CloseIcon fontSize={12} color={"black"} />
+               </ActionIcon>
             </Box>
          ) : (
             <Flex
-               height={"100%"}
-               width={"100%"}
+               h={"100%"}
+               w={"100%"}
+               sx={{
+                  transitionDuration: "200ms",
+                  cursor: "pointer",
+                  "&:hover": {
+                     opacity: 0.6,
+                  },
+               }}
+               bg={"transparent"}
                onClick={() => fileRef.current?.click()}
-               _hover={{ opacity: 0.6 }}
-               transitionDuration={"200ms"}
-               alignItems={"center"}
-               justifyContent={"center"}
-               cursor={"pointer"}
+               align={"center"}
+               justify={"center"}
             >
                {image && <CloseIcon fontSize={20} color={"black"} />}
-               <Text
-                  fontWeight={"semibold"}
-                  color={"blackAlpha.700"}
-                  fontSize={20}
-               >
-                  Select
+               <Text fw={"bold"} color={theme.colors.dark[7]} fz={18}>
+                  Choose a file
                </Text>
             </Flex>
          )}
-         <Input
+         <FileInput
             onChange={onFileChange}
             ref={fileRef as any}
-            type={"file"}
             hidden
             accept={"image/*"}
          />

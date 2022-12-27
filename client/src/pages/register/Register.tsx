@@ -1,7 +1,6 @@
 import React, { FC } from "react";
-import { Box, Button, FormControl, FormLabel, Heading, Spinner, Text } from "@chakra-ui/react";
 import { useRegisterMutation } from "../../api/identity";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Form, Formik } from "formik";
 import { PostApiIdentityRegisterBody } from "../../api/models";
 import { useGetAllCountriesQuery } from "../../api/countries/hooks/useGetAllCountriesQuery";
@@ -12,6 +11,8 @@ import ImageSelect from "./ImageSelect";
 import { ApiError } from "../../api/common/ApiError";
 import { log } from "../../utils/logger";
 import ErrorMessage from "../../components/ErrorMessage";
+import { Anchor, Box, Button, Container, Input, Loader, Text, Title } from "@mantine/core";
+import Link from "../../components/Link";
 
 const Register: FC = () => {
    const { mutateAsync, isError, error } = useRegisterMutation();
@@ -19,10 +20,10 @@ const Register: FC = () => {
    const navigate = useNavigate();
 
    return (
-      <Box mt={10} mx={"auto"} width={"350px"}>
-         <Heading textAlign={"left"} size={"lg"} mb={6}>
+      <Box mt={10} mx={"auto"} w={"350px"}>
+         <Title order={1} style={{ textAlign: "start" }} mb={24}>
             Register
-         </Heading>
+         </Title>
          <Formik<PostApiIdentityRegisterBody>
             validationSchema={registerSchema}
             initialValues={{
@@ -84,69 +85,88 @@ const Register: FC = () => {
                      label={"Username: "}
                      placeholder={"Select a cool username ..."}
                   />
-                  <FormControl>
-                     <FormLabel>Country: </FormLabel>
+                  <Input.Wrapper
+                     sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        width: "100%",
+                        gap: 2,
+                        alignItems: "flex-start",
+                     }}
+                  >
+                     <Input.Label size={"lg"}>Country: </Input.Label>
                      <SelectField
+                        w={"100%"}
                         name={"Country"}
                         options={(countries || []).sort((a, b) =>
                            a.name!.localeCompare(b.name!, "en", {
                               sensitivity: "base",
-                           }),
+                           })
                         )}
-                        renderOption={(c) => (
-                           <option value={c.name!} key={c.code}>
-                              {c.name}
-                           </option>
-                        )}
+                        getName={(c) => c.name!}
                      />
-                  </FormControl>
-                  <FormControl>
-                     <FormLabel>Select a Gender: </FormLabel>
-                     <SelectField
-                        name={"Gender"}
-                        options={allGenders}
-                        renderOption={(g, index) => (
-                           <option value={g!} key={index}>
-                              {g}
-                           </option>
-                        )}
-                     />
-                  </FormControl>
-                  <FormControl>
-                     <FormLabel>Select a profile image: </FormLabel>
+                  </Input.Wrapper>
+                  <Input.Wrapper
+                     sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        width: "100%",
+                        gap: 2,
+                        alignItems: "flex-start",
+                     }}
+                  >
+                     <Input.Label size={"lg"}>Select a Gender:</Input.Label>
+                     <SelectField w={"100%"} name={"Gender"} options={allGenders} />
+                  </Input.Wrapper>
+                  <Input.Wrapper
+                     sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        width: "100%",
+                        gap: 2,
+                        alignItems: "flex-start",
+                     }}
+                  >
+                     <Input.Label size={"md"}>Select a profile image: </Input.Label>
                      <ImageSelect name={"ProfilePicture"} />
-                  </FormControl>
+                  </Input.Wrapper>
                   <FormField<PostApiIdentityRegisterBody>
                      name={"Password"}
+                     autoComplete={"autoComplete"}
                      label={"Password: "}
                      type={"password"}
                      placeholder={"Type your password ..."}
                   />
-                  <ErrorMessage show={isError} errorMessage={(error as ApiError).errors[0]} />
+                  <ErrorMessage show={isError} errorMessage={(error as ApiError)?.message ?? ""} />
                   <Button
                      type={"submit"}
-                     alignSelf={"flex-end"}
+                     style={{ alignSelf: "flex-end" }}
                      py={5}
-                     fontSize={16}
-                     width={"60%"}
-                     spinner={<Spinner color={"white"} size={"md"} />}
-                     isLoading={isSubmitting}
+                     size={"md"}
+                     w={"60%"}
+                     loaderProps={<Loader color={"blue"} size={"lg"} />}
+                     loading={isSubmitting}
+                     loaderPosition={"center"}
                      mt={4}
-                     colorScheme={"twitter"}
+                     color={"blue"}
                   >
-                     Register
+                     {!isSubmitting && "Register"}
                   </Button>
-                  <Text fontSize="1.1rem" textAlign={"center"}>
+                  <Text fw={"normal"} size={"sm"} align={"end"}>
                      Already have an account?{" "}
-                     <Box
-                        fontWeight={"medium"}
-                        fontSize="1.1rem"
-                        ml={2}
-                        display={"inline"}
-                        color={"messenger.500"}
-                     >
-                        <Link to={"/login"}>Login here!</Link>
-                     </Box>
+                     <Container size={"sm"} ml={10} px={0} display={"inline"}>
+                        <Anchor
+                           fw={"bold"}
+                           size={"sm"}
+                           styles={(theme) => ({
+                              "&.hover": {
+                                 color: theme.colors.blue[5],
+                              },
+                           })}
+                        >
+                           <Link to={"/login"}>Login here!</Link>
+                        </Anchor>
+                     </Container>
                   </Text>
                </Form>
             )}

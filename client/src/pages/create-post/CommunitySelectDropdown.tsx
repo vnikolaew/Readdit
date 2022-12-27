@@ -1,115 +1,153 @@
-import { ChevronDownIcon } from "@chakra-ui/icons";
-import {
-   Avatar,
-   Button,
-   Flex,
-   HStack,
-   Menu,
-   MenuButton,
-   MenuGroup,
-   MenuItem,
-   MenuList,
-   Text,
-   VStack,
-} from "@chakra-ui/react";
-import React, { FC, useState } from "react";
+import React, { FC, forwardRef, useRef, useState } from "react";
 import { useCurrentUser } from "../../api/common/hooks/useCurrentUser";
 import { PostApiPostsBody, UserCommunityModel } from "../../api/models";
 import { useGetMyCommunitiesQuery } from "../../api/userCommunities/hooks/useGetMyCommunitiesQuery";
 import { FastField, FieldProps } from "formik";
+import {
+   Avatar,
+   Box,
+   Group,
+   Select,
+   Stack,
+   Text,
+   useMantineTheme,
+} from "@mantine/core";
+import { ChevronDownIcon } from "@chakra-ui/icons";
+import { TbCircleDotted } from "react-icons/tb";
 
 const CommunitySelectDropdown: FC = () => {
    const user = useCurrentUser();
-   const [selectedCommunity, setSelectedCommunity] =
-      useState<UserCommunityModel>();
+   const selectRef = useRef<HTMLInputElement | null>(null);
+
+   const theme = useMantineTheme();
+   const [selectedCommunityId, setSelectedCommunityId] = useState<string>();
    const { data: communities } = useGetMyCommunitiesQuery(user?.userId);
 
    return (
       <FastField name={"CommunityId"}>
-         {({ field: { name }, form: { setFieldValue } }: FieldProps<PostApiPostsBody>) => (
-            <Menu>
-               <MenuButton
-                  borderWidth={2}
-                  borderColor={"gray"}
-                  width={"30%"}
-                  _active={{ bgColor: "blackAlpha.800" }}
-                  py={6}
-                  px={4}
-                  bgColor={"blackAlpha.800"}
-                  color={"white"}
-                  fontSize={12}
-                  _hover={{
-                     borderColor: "gray",
-                     borderWidth: 2,
-                  }}
-                  as={Button}
-                  textAlign={"start"}
-                  rightIcon={<ChevronDownIcon ml={4} boxSize={6} />}
-               >
-                  {selectedCommunity ? (
-                     <HStack spacing={2}>
-                        <Avatar
-                           borderRadius={"50%"}
-                           width={8}
-                           height={8}
-                           objectFit={"cover"}
-                           src={selectedCommunity.pictureUrl!}
-                        />
-                        <Text fontWeight={"medium"} color={"white"} fontSize={14}>
-                           c/{selectedCommunity.name}
-                        </Text>
-                     </HStack>
+         {({
+            field: { name },
+            form: { setFieldValue },
+         }: FieldProps<PostApiPostsBody>) => (
+            <Select
+               w={"40%"}
+               ref={selectRef!}
+               size={"md"}
+               styles={(theme) => ({
+                  input: {
+                     backgroundColor: theme.colors.dark[5],
+                     borderColor: theme.colors.gray[2],
+                     borderWidth: 1,
+                     borderRadius: 6,
+                     color: theme.colors.gray[0],
+                  },
+                  itemsWrapper: {
+                     marginBlock: 0,
+                     backgroundColor: theme.colors.dark[5],
+                     color: theme.colors.gray[0],
+                     borderRadius: 6,
+                  },
+                  label: {
+                     textAlign: "left",
+                     fontSize: 16,
+                     marginBottom: 6,
+                  },
+                  item: {
+                     backgroundColor: theme.colors.dark[5],
+                     color: theme.colors.gray[0],
+                     "&:hover": {
+                        backgroundColor: theme.colors.dark[4],
+                        color: theme.colors.gray[0],
+                     },
+                     "&[data-selected]": {
+                        "&, &:hover": {
+                           backgroundColor: theme.colors.dark[5],
+                           color: theme.colors.gray[0],
+                        },
+                     },
+                  },
+               })}
+               placeholder={"Choose a community"}
+               label={"Choose a community"}
+               variant={"filled"}
+               rightSection={
+                  <ChevronDownIcon
+                     color={theme.colors.gray[0]}
+                     onClick={(_) => selectRef.current?.select()}
+                     cursor={"pointer"}
+                     fontSize={14}
+                  />
+               }
+               icon={
+                  !!selectedCommunityId?.length ? (
+                     <Avatar
+                        radius={"lg"}
+                        size={28}
+                        mx={8}
+                        src={
+                           communities?.find(
+                              (c) => c.id === selectedCommunityId
+                           )!.pictureUrl
+                        }
+                     />
                   ) : (
-                     "Choose a community"
-                  )}
-               </MenuButton>
-               <MenuList py={0} border={"none"}>
-                  <MenuGroup
-                     textAlign={"start"}
-                     fontSize={10}
-                     title={"YOUR COMMUNITIES"}
-                  >
-                     {communities?.map((c) => (
-                        <MenuItem
-                           borderRadius={10}
-                           onClick={() => {
-                              setSelectedCommunity(c);
-                              setFieldValue(name, c.id);
-                           }}
-                           px={3}
-                           py={3}
-                           gap={6}
-                           _hover={{ bgColor: "transparent" }}
-                        >
-                           <Flex
-                              justifyContent={"flex-start"}
-                              alignItems={"center"}
-                              gap={3}
-                           >
-                              <Avatar
-                                 borderRadius={"50%"}
-                                 width={8}
-                                 height={8}
-                                 objectFit={"cover"}
-                                 src={c!.pictureUrl!}
-                              />
-                              <VStack spacing={0}>
-                                 <Text color={"black"} fontSize={14}>
-                                    c/{c.name}
-                                 </Text>
-                                 <Text color={"gray"} fontSize={10}>
-                                    {c.membersCount} members
-                                 </Text>
-                              </VStack>
-                           </Flex>
-                        </MenuItem>
-                     ))}
-                  </MenuGroup>
-               </MenuList>
-            </Menu>
+                     <TbCircleDotted size={28} />
+                  )
+               }
+               iconWidth={50}
+               value={selectedCommunityId}
+               onChange={(id) => {
+                  setFieldValue(name, id!);
+                  setSelectedCommunityId(id!);
+               }}
+               clearable
+               searchable
+               maxDropdownHeight={200}
+               data={
+                  communities?.map((c) => ({
+                     ...c,
+                     group: "YOUR COMMUNITIES",
+                     value: c.id!,
+                     label: `r/${c.name}`,
+                  })) || []
+               }
+            />
          )}
       </FastField>
    );
 };
+
+const SelectItem = forwardRef<HTMLDivElement, UserCommunityModel>((c, ref) => {
+   const theme = useMantineTheme();
+   return (
+      <Box
+         ref={ref}
+         component={"div"}
+         sx={(_) => ({
+            cursor: "pointer",
+            "&:hover": {
+               backgroundColor: theme.colors.dark[6],
+            },
+         })}
+         key={c.id}
+         px={12}
+         my={4}
+         py={8}
+         bg={"transparent"}
+      >
+         <Group spacing={"sm"}>
+            <Avatar radius={"xl"} size={"sm"} src={c!.pictureUrl!} />
+            <Stack spacing={0}>
+               <Text size={"sm"} color={theme.colors.dark[0]}>
+                  c/{c.name}
+               </Text>
+               <Text pl={4} size={"xs"} color={theme.colors.dark[0]}>
+                  · {c.membersCount} members
+               </Text>
+            </Stack>
+         </Group>
+      </Box>
+   );
+});
 
 export default CommunitySelectDropdown;

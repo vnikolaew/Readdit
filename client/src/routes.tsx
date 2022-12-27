@@ -2,17 +2,18 @@ import { createBrowserRouter } from "react-router-dom";
 import Home from "./pages/home/Home";
 import Auth from "./components/Auth";
 import Login from "./pages/login/Login";
-import App from "./App";
+import Root from "./pages/Root";
 import Register from "./pages/register/Register";
 import Community from "./pages/community/Community";
 import CreatePost from "./pages/create-post/CreatePost";
 import PostDetails from "./pages/post/PostDetails";
 import UserDetails from "./pages/user/UserDetails";
+import CreateCommmunity from "./pages/create-community/CreateCommmunity";
 
 export const router = createBrowserRouter([
    {
       path: "/",
-      element: <App />,
+      element: <Root />,
       children: [
          {
             index: true,
@@ -45,6 +46,10 @@ export const router = createBrowserRouter([
          {
             path: "create/post",
             element: <Auth redirectTo={"/login"}><CreatePost /></Auth>,
+         },
+         {
+            path: "create/community",
+            element: <Auth redirectTo={"/login"}><CreateCommmunity /></Auth>,
          },
       ],
    },
